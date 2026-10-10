@@ -1,6 +1,9 @@
 class_name DamageEffect extends Effect
 
-@export var ammount: int
+@export var amount: int
 
-func resolve(_context) -> void:
-	print("Dealt %s damage"%ammount)
+func resolve(ctx: EffectContext) -> void:
+	ctx.state.damage_unit(ctx.target, amount)
+
+func _to_string() -> String:
+	return "DamageEffect(amount=%d)" % amount

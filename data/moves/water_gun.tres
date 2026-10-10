@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MoveData" format=3 uid="uid://cpbniqwa7usaj"]
+
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="1_xbi72"]
+[ext_resource type="Script" uid="uid://b3vucmasg4hno" path="res://data/moves/move_data.gd" id="2_q0b4k"]
+[ext_resource type="Script" uid="uid://btu52bwh0ljwe" path="res://data/effects/damage_effect.gd" id="2_qk8ua"]
+
+[sub_resource type="Resource" id="Resource_qk8ua"]
+script = ExtResource("2_qk8ua")
+amount = 3
+metadata/_custom_type_script = "uid://btu52bwh0ljwe"
+
+[resource]
+script = ExtResource("2_q0b4k")
+id = &"water_gun"
+display_name = "Water Gun"
+cost = 1
+target_mode = &"single_target"
+effects = Array[ExtResource("1_xbi72")]([SubResource("Resource_qk8ua")])
+metadata/_custom_type_script = "uid://b3vucmasg4hno"

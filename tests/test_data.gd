@@ -1,6 +1,5 @@
 extends Node
 
-
 func _ready() -> void:
 	var p: PokemonData = load("res://data/pokemon/charmander.tres")
 	print(p.display_name)
