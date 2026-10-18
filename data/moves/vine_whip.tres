@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MoveData" format=3 uid="uid://ntebgdylbsca"]
+
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="1_lea43"]
+[ext_resource type="Script" uid="uid://b3vucmasg4hno" path="res://data/moves/move_data.gd" id="2_2wj3a"]
+[ext_resource type="Script" uid="uid://btu52bwh0ljwe" path="res://data/effects/damage_effect.gd" id="2_4vtew"]
+
+[sub_resource type="Resource" id="Resource_4vtew"]
+script = ExtResource("2_4vtew")
+amount = 2
+metadata/_custom_type_script = "uid://btu52bwh0ljwe"
+
+[resource]
+script = ExtResource("2_2wj3a")
+id = &"vine_whip"
+display_name = "Vine Whip"
+cost = 1
+target_mode = 1
+effects = Array[ExtResource("1_lea43")]([SubResource("Resource_4vtew")])
+metadata/_custom_type_script = "uid://b3vucmasg4hno"
