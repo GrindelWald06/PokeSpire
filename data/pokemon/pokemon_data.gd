@@ -5,7 +5,7 @@ class_name PokemonData extends Resource
 @export var cost: int
 @export var attack: int
 @export var max_hp: int
-@export var types: Array[StringName]
+@export var types: Array[Types.Type]
 @export var rarity: StringName
 @export var evolves_into: Array[PokemonData]
 @export var move: MoveData

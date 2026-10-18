@@ -14,6 +14,7 @@ script = ExtResource("2_2wj3a")
 id = &"vine_whip"
 display_name = "Vine Whip"
 cost = 1
+type = 4
 target_mode = 1
 effects = Array[ExtResource("1_lea43")]([SubResource("Resource_4vtew")])
 metadata/_custom_type_script = "uid://b3vucmasg4hno"

@@ -189,6 +189,7 @@ func use_move(user:Unit, target:Unit) -> bool:
 	var context = EffectContext.new()
 	context.state = self
 	context.source = user
+	context.move_type = user.data.move.type
 
 	if move_to_use.target_mode == MoveData.TargetMode.SINGLE_ENEMY:
 		context.target = target

@@ -1,7 +1,12 @@
 extends Node
 
 func _ready() -> void:
-	test_win_condition()
+	var combat = make_combat()
+	var charmander = add_unit(combat, "res://data/pokemon/charmander.tres", 1)
+	var squirtle = add_unit(combat, "res://data/pokemon/squirtle.tres", 1)
+	var bulbasaur = add_unit(combat, "res://data/pokemon/bulbasaur.tres", 0)
+	combat.sides[0].energy = 3
+	combat.use_move(bulbasaur, squirtle)
 
 
 func test_win_condition():
@@ -16,8 +21,6 @@ func test_win_condition():
 	print("use_move: ", combat.use_move(unit, null))
 	print("play_card: ", combat.play_card(0, 0))
 	#print("end_turn: ", combat.end_turn())
-
-
 
 func make_combat() -> CombatState:
 	var combat = CombatState.new()
@@ -62,7 +65,12 @@ func _on_unit_summoned(unit: Unit) -> void:
 
 
 func _on_unit_attacked(attacker: Unit, target: Unit) -> void:
-	print("Unit attacked: %s -> %s" % [str(attacker), str(target)])
+	var t:String
+	if target == null:
+		t = "Hero"
+	else:
+		t = target.data.display_name
+	print("%s attacked %s" % [attacker.data.display_name, t])
 
 
 func _on_turn_started(side_index: int) -> void:
