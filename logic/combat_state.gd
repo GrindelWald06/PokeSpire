@@ -14,6 +14,8 @@ signal unit_attacked(attacker:Unit, target:Unit)
 signal turn_started(side_index:int)
 signal move_used(user:Unit, move:MoveData, target:Unit)
 signal combat_ended(winner_side:int)
+signal status_applied(unit:Unit, status:Status.STATUS)
+signal status_damage(unit:Unit, amount:int)
 
 func _init() -> void:
 	sides.append(Side.new())
@@ -67,7 +69,7 @@ func start_turn(side_index:int) -> void:
 	
 	# allow units to act
 	for unit in sides[side_index].board:
-		unit.can_act = true
+		unit.can_act = not unit.has_status(Status.STATUS.PARALYSIS)
 
 	# draw a card
 	var drawn = sides[side_index].draw_card()
@@ -78,8 +80,30 @@ func end_turn() -> void:
 	if is_over:
 		print("Combat is over")
 		return
-	start_turn(opponent_of(active_side))
-	turn_number += 1
+	
+	# Apply end of turn effects:
+	for unit in sides[active_side].board.duplicate():
+		# Apply burn damage
+		if unit.has_status(Status.STATUS.BURN):
+			status_damage.emit(unit, Status.STATUS.BURN)
+			damage_unit(unit, 1, false)
+		if not unit.is_alive():
+			continue
+		# Decremente remaining turns for statuses
+		for status in unit.statuses.keys():
+			if unit.statuses[status] >= 1:
+				unit.statuses[status] -= 1
+				if unit.statuses[status] == 0:
+					unit.statuses.erase(status)
+
+	if is_over:
+		print("Combat is over")
+		return
+
+	var next_side := opponent_of(active_side)
+	if next_side == 0:
+		turn_number += 1
+	start_turn(next_side)
 
 func play_card(side_index:int, hand_index:int) -> bool:
 	if is_over:
@@ -112,17 +136,19 @@ func play_card(side_index:int, hand_index:int) -> bool:
 
 func _attack_error(attacker:Unit, target:Unit) -> String:
 	if not attacker in sides[active_side].board:
-		return "Attacker not in the active side"
+		return "%s not in the active side" % attacker.data.display_name
+	if attacker.has_status(Status.STATUS.PARALYSIS):
+		return "%s is Paralyzed and can not attack" % attacker.data.display_name
 	if not attacker.can_act:
-		return "Attacker can't act"
+		return "%s can't act" % attacker.data.display_name
 	if target == null:
 		if not sides[opponent_of(active_side)].board.is_empty():
 			return "Can't attack hero if board is not empty"
 		return ""
 	if not target.is_alive():
-		return "Target is not alive"
+		return "%s is not alive" % target.data.display_name
 	if not target in sides[opponent_of(active_side)].board:
-		return "Target is not in the opposing board"
+		return "%s is not in the opposing board" % target.data.display_name
 	return ""
 
 func attack(attacker:Unit, target:Unit) -> bool:
@@ -138,24 +164,26 @@ func attack(attacker:Unit, target:Unit) -> bool:
 	attacker.can_act = false
 	unit_attacked.emit(attacker, target)
 	if target == null:
-		damage_hero(opponent_of(active_side), attacker.attack)
+		damage_hero(opponent_of(active_side), attacker.get_attack())
 	else:
 		# Trade handling
-		var damage_taken = target.attack
-		damage_unit(target, attacker.attack)
+		var damage_taken = target.get_attack()
+		damage_unit(target, attacker.get_attack())
 		damage_unit(attacker, damage_taken, false)
 	return true
 
 func _move_error(user:Unit, target:Unit) -> String:
 	if not user.is_alive():
-		return "User is not alive"
+		return "%s is not alive" % user.data.display_name
 	if user.side_index != active_side:
 		return "Can't use moves out of turn"
+	if user.has_status(Status.STATUS.PARALYSIS):
+		return "%s is Paralyzed and can not use move" % user.data.display_name
 	if not user.can_act:
-		return "User can't act"
+		return "%s can't act" % user.data.display_name
 	var move_to_use = user.data.move
 	if move_to_use == null:
-		return "User has no move to use"
+		return "%s has no move to use" % user.data.display_name
 	if move_to_use.cost > sides[active_side].energy:
 		return "Not enough energy to use"
 	if move_to_use.target_mode == MoveData.TargetMode.SINGLE_ENEMY:
@@ -166,7 +194,7 @@ func _move_error(user:Unit, target:Unit) -> String:
 			return ""
 		# target is a pokemon
 		if not target.is_alive():
-			return "Target is dead"
+			return "%s is dead" % target.data.display_name
 		if target.side_index != opponent_of(user.side_index):
 			return "Can only target opponent's pokemons"
 	return ""
