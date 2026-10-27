@@ -13,18 +13,18 @@ var energy: int = 0
 var max_energy: int = 3
 
 func draw_card() -> PokemonData:
-	if deck.is_empty():
-		deck = discard
+	if deck.is_empty() and not discard.is_empty():
+		deck.append_array(discard)
 		discard.clear()
 		deck.shuffle()
 
 	if deck.is_empty():
 		return null
 
-	var drawn_card = deck.pop_back()
+	var drawn_card: PokemonData = deck.pop_back()
 	if hand.size() < HAND_LIMIT:
 		hand.append(drawn_card)
 	else:
 		discard.append(drawn_card)
-	
+
 	return drawn_card
