@@ -1,0 +1,42 @@
+[gd_resource type="Resource" script_class="PokemonData" format=3 uid="uid://db2i60b642lhd"]
+
+[ext_resource type="Script" uid="uid://d1a0fpfuvmsjg" path="res://data/abilities/ability.gd" id="1_hogeq"]
+[ext_resource type="Script" uid="uid://blmbveo2laj6o" path="res://data/pokemon/pokemon_data.gd" id="1_r61u0"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_1sjaj"]
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="4_8sdxr"]
+[ext_resource type="Script" uid="uid://btu52bwh0ljwe" path="res://data/effects/damage_effect.gd" id="5_ejjo8"]
+[ext_resource type="Script" uid="uid://b3vucmasg4hno" path="res://data/moves/move_data.gd" id="6_exc42"]
+
+[sub_resource type="Resource" id="Resource_hogeq"]
+script = ExtResource("1_hogeq")
+id = "sturdy"
+display_name = "Sturdy"
+spill_divisor = 2
+metadata/_custom_type_script = "uid://d1a0fpfuvmsjg"
+
+[sub_resource type="Resource" id="Resource_wovit"]
+script = ExtResource("5_ejjo8")
+amount = 1
+metadata/_custom_type_script = "uid://btu52bwh0ljwe"
+
+[sub_resource type="Resource" id="Resource_1sjaj"]
+script = ExtResource("6_exc42")
+id = &"rock_tomb"
+display_name = "Rock Tomb"
+cost = 1
+type = 7
+effects = Array[ExtResource("4_8sdxr")]([SubResource("Resource_wovit")])
+metadata/_custom_type_script = "uid://b3vucmasg4hno"
+
+[resource]
+script = ExtResource("1_r61u0")
+id = &"geodude"
+display_name = "Geodude"
+cost = 1
+attack = 1
+max_hp = 3
+types = Array[int]([7, 6])
+rarity = &"common"
+move = SubResource("Resource_1sjaj")
+ability = SubResource("Resource_hogeq")
+metadata/_custom_type_script = "uid://blmbveo2laj6o"

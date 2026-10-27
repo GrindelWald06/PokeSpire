@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Ability" format=3 uid="uid://c6wcrkopk7mgs"]
+
+[ext_resource type="Script" uid="uid://d1a0fpfuvmsjg" path="res://data/abilities/ability.gd" id="1_lsvfs"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_nt3rl"]
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="3_vtw8q"]
+[ext_resource type="Script" uid="uid://dgpyjo458yayp" path="res://data/effects/heal_effect.gd" id="4_x6kuf"]
+
+[sub_resource type="Resource" id="Resource_kn15i"]
+script = ExtResource("4_x6kuf")
+amount = 2
+metadata/_custom_type_script = "uid://dgpyjo458yayp"
+
+[sub_resource type="Resource" id="Resource_23t5x"]
+script = ExtResource("2_nt3rl")
+hook = 2
+effects = Array[ExtResource("3_vtw8q")]([SubResource("Resource_kn15i")])
+metadata/_custom_type_script = "uid://wanm38nreyeo"
+
+[resource]
+script = ExtResource("1_lsvfs")
+id = "regenerator"
+display_name = "Regenerator"
+triggers = Array[ExtResource("2_nt3rl")]([SubResource("Resource_23t5x")])
+metadata/_custom_type_script = "uid://d1a0fpfuvmsjg"

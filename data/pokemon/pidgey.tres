@@ -1,0 +1,17 @@
+[gd_resource type="Resource" script_class="PokemonData" format=3 uid="uid://dckokurdlbhd7"]
+
+[ext_resource type="Resource" uid="uid://bghu25yvp01j0" path="res://data/abilities/quick_feet.tres" id="1_po4iy"]
+[ext_resource type="Script" uid="uid://blmbveo2laj6o" path="res://data/pokemon/pokemon_data.gd" id="2_ax3j8"]
+[ext_resource type="Resource" uid="uid://d1g2klpdxpvj3" path="res://data/moves/fly.tres" id="3_vt6w5"]
+
+[resource]
+script = ExtResource("2_ax3j8")
+id = &"pidgey"
+display_name = "Pidgey"
+cost = 1
+attack = 2
+max_hp = 2
+types = Array[int]([8])
+rarity = &"common"
+move = ExtResource("3_vt6w5")
+ability = ExtResource("1_po4iy")

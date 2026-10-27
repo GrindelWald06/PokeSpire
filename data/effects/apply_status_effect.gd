@@ -9,3 +9,6 @@ func resolve(ctx: EffectContext) -> void:
 		return
 	if ctx.target.add_status(status, turns):
 		ctx.state.status_applied.emit(ctx.target, status)
+
+func _to_string() -> String:
+	return "ApplyStatusEffect(status=%s, turns=%s)" % [status, turns]

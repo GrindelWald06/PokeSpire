@@ -1,0 +1,26 @@
+[gd_resource type="Resource" script_class="Ability" format=3 uid="uid://btsq8inx0iur4"]
+
+[ext_resource type="Script" uid="uid://d1a0fpfuvmsjg" path="res://data/abilities/ability.gd" id="1_p8ne7"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_1u3e8"]
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="3_2tqt0"]
+[ext_resource type="Script" uid="uid://db0haxvsluxlx" path="res://data/effects/apply_status_effect.gd" id="4_ya6hy"]
+
+[sub_resource type="Resource" id="Resource_dhr2n"]
+script = ExtResource("4_ya6hy")
+status = 1
+turns = 2
+metadata/_custom_type_script = "uid://db0haxvsluxlx"
+
+[sub_resource type="Resource" id="Resource_t3pxt"]
+script = ExtResource("2_1u3e8")
+hook = 3
+target = 1
+effects = Array[ExtResource("3_2tqt0")]([SubResource("Resource_dhr2n")])
+metadata/_custom_type_script = "uid://wanm38nreyeo"
+
+[resource]
+script = ExtResource("1_p8ne7")
+id = "static"
+display_name = "Static"
+triggers = Array[ExtResource("2_1u3e8")]([SubResource("Resource_t3pxt")])
+metadata/_custom_type_script = "uid://d1a0fpfuvmsjg"

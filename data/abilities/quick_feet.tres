@@ -1,0 +1,22 @@
+[gd_resource type="Resource" script_class="Ability" format=3 uid="uid://bghu25yvp01j0"]
+
+[ext_resource type="Script" uid="uid://d1a0fpfuvmsjg" path="res://data/abilities/ability.gd" id="1_mxff2"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_0kpjb"]
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="3_0kpjb"]
+[ext_resource type="Script" uid="uid://ck7b1r27r55p7" path="res://data/effects/act_on_summon_effect.gd" id="4_2l4j3"]
+
+[sub_resource type="Resource" id="Resource_l4wgi"]
+script = ExtResource("4_2l4j3")
+metadata/_custom_type_script = "uid://ck7b1r27r55p7"
+
+[sub_resource type="Resource" id="Resource_bgbwh"]
+script = ExtResource("2_0kpjb")
+effects = Array[ExtResource("3_0kpjb")]([SubResource("Resource_l4wgi")])
+metadata/_custom_type_script = "uid://wanm38nreyeo"
+
+[resource]
+script = ExtResource("1_mxff2")
+id = "quick_feet"
+display_name = "Quick Feet"
+triggers = Array[ExtResource("2_0kpjb")]([SubResource("Resource_bgbwh")])
+metadata/_custom_type_script = "uid://d1a0fpfuvmsjg"

@@ -7,6 +7,8 @@ var attack: int
 var max_hp: int
 var can_act: bool
 var statuses: Dictionary[Status.STATUS, int]
+var temp_attack_modifier: int = 0
+
 
 func _init(p_data, p_side) -> void:
 	data = p_data
@@ -31,9 +33,18 @@ func add_status(status: Status.STATUS, turn: int) -> bool:
 	return false
 
 func get_attack() -> int:
+	var amount = attack + temp_attack_modifier
 	if has_status(Status.STATUS.BURN):
-		return max(0, attack-1)
-	return attack
+		return max(0, amount-1)
+	for source in get_hook_sources():
+		amount = source.modify_attack(null, self, amount)
+	return amount
+
+func get_hook_sources() -> Array:
+	var sources := []
+	if data.ability != null:
+		sources.append(data.ability)
+	return sources
 
 func _to_string() -> String:
 	return "Unit(name=%s, side_index=%d, hp=%d/%d, attack=%d, can_act=%s)" % [

@@ -16,6 +16,8 @@ signal move_used(user:Unit, move:MoveData, target:Unit)
 signal combat_ended(winner_side:int)
 signal status_applied(unit:Unit, status:Status.STATUS)
 signal status_damage(unit:Unit, amount:int)
+signal ability_triggered(unit:Unit, ability:Ability)
+signal unit_healed(unit:Unit, amount:int)
 
 func _init() -> void:
 	sides.append(Side.new())
@@ -32,7 +34,9 @@ func damage_hero(side_index, amount) -> void:
 		combat_ended.emit(opponent_of(side_index))
 
 func damage_unit(unit:Unit, amount:int, allow_spill:=true) -> void:
+	amount = modify(&"modify_incoming_damage", unit, amount)
 	var overkill = max (0, amount - unit.current_hp)
+	overkill = modify(&"modify_spill", unit, overkill)
 	# deal damage
 	unit.current_hp = max(0, unit.current_hp - amount)
 	damage_dealt.emit(unit, amount)
@@ -46,21 +50,26 @@ func damage_unit(unit:Unit, amount:int, allow_spill:=true) -> void:
 		sides[unit.side_index].board.erase(unit)
 		sides[unit.side_index].discard.append(unit.data)
 		unit_died.emit(unit)
+		fire(&"on_death", unit)
+
+func heal_unit(unit:Unit, amount:int) -> void:
+	if amount <= 0:
+		return
+	var heal_amount = min(amount, unit.data.max_hp - unit.current_hp)
+	if heal_amount > 0:
+		unit.current_hp += heal_amount
+		unit_healed.emit(unit, heal_amount)
 
 func start_combat() -> void:
 	# draw 5 cards for each side
-	var drawn:PokemonData
 	for side_index in range(2):
 		sides[side_index].deck.shuffle()
-		for i in range(5):
-			drawn = sides[side_index].draw_card()
-			card_drawn.emit(side_index, drawn)
-	
+		draw_cards(side_index, 5)
+
 	start_turn(0)
 
 func start_turn(side_index:int) -> void:
 	turn_started.emit(side_index)
-
 	# set active side
 	active_side = side_index
 	
@@ -70,11 +79,10 @@ func start_turn(side_index:int) -> void:
 	# allow units to act
 	for unit in sides[side_index].board:
 		unit.can_act = not unit.has_status(Status.STATUS.PARALYSIS)
+		fire(&"on_turn_start", unit)
 
 	# draw a card
-	var drawn = sides[side_index].draw_card()
-	if drawn:
-		card_drawn.emit(side_index, drawn)
+	draw_cards(side_index, 1)
 
 func end_turn() -> void:
 	if is_over:
@@ -87,6 +95,9 @@ func end_turn() -> void:
 		if unit.has_status(Status.STATUS.BURN):
 			status_damage.emit(unit, Status.STATUS.BURN)
 			damage_unit(unit, 1, false)
+		if not unit.is_alive():
+			continue
+		fire(&"on_turn_end", unit)
 		if not unit.is_alive():
 			continue
 		# Decremente remaining turns for statuses
@@ -104,6 +115,12 @@ func end_turn() -> void:
 	if next_side == 0:
 		turn_number += 1
 	start_turn(next_side)
+
+func draw_cards(side_index:int, amount:int) -> void:
+	for i in range(amount):
+		var drawn = sides[side_index].draw_card()
+		if drawn:
+			card_drawn.emit(side_index, drawn)
 
 func play_card(side_index:int, hand_index:int) -> bool:
 	if is_over:
@@ -132,6 +149,7 @@ func play_card(side_index:int, hand_index:int) -> bool:
 	var unit = Unit.new(card_to_play, side_index)
 	side.board.append(unit)
 	unit_summoned.emit(unit)
+	fire(&"on_summoned", unit)
 	return true
 
 func _attack_error(attacker:Unit, target:Unit) -> String:
@@ -170,6 +188,7 @@ func attack(attacker:Unit, target:Unit) -> bool:
 		var damage_taken = target.get_attack()
 		damage_unit(target, attacker.get_attack())
 		damage_unit(attacker, damage_taken, false)
+		fire(&"on_attacked", target, [attacker])
 	return true
 
 func _move_error(user:Unit, target:Unit) -> String:
@@ -214,10 +233,7 @@ func use_move(user:Unit, target:Unit) -> bool:
 	user.can_act = false
 	move_used.emit(user, move_to_use, target)
 
-	var context = EffectContext.new()
-	context.state = self
-	context.source = user
-	context.move_type = user.data.move.type
+	var context = EffectContext.new(self, user, target, true, user.data.move.type)
 
 	if move_to_use.target_mode == MoveData.TargetMode.SINGLE_ENEMY:
 		context.target = target
@@ -237,3 +253,17 @@ func use_move(user:Unit, target:Unit) -> bool:
 			if context.target.is_alive():
 				effect.resolve(context)
 	return true
+
+# Ability hooks
+func fire(hook:StringName, unit:Unit, args:Array = []) -> void:
+	for source in unit.get_hook_sources():
+		if not source.has_method(hook):
+			push_error("No hook named %s found" % hook)
+		source.callv(hook, [self, unit] + args)
+
+func modify(hook:StringName, unit:Unit, value:int, args:Array = []) -> int:
+	for source in unit.get_hook_sources():
+		if not source.has_method(hook):
+			push_error("No hook named %s found" % hook)
+		value = source.callv(hook, [self, unit] + args + [value])
+	return value

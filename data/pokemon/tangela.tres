@@ -1,0 +1,18 @@
+[gd_resource type="Resource" script_class="PokemonData" format=3 uid="uid://ciofs02u37w4f"]
+
+[ext_resource type="Script" uid="uid://blmbveo2laj6o" path="res://data/pokemon/pokemon_data.gd" id="1_ilujg"]
+[ext_resource type="Resource" uid="uid://c6wcrkopk7mgs" path="res://data/abilities/regenerator.tres" id="1_se3dv"]
+[ext_resource type="Resource" uid="uid://ntebgdylbsca" path="res://data/moves/vine_whip.tres" id="3_v3n6a"]
+
+[resource]
+script = ExtResource("1_ilujg")
+id = &"tangela"
+display_name = "Tangela"
+cost = 2
+attack = 2
+max_hp = 7
+types = Array[int]([4])
+rarity = &"rare"
+move = ExtResource("3_v3n6a")
+ability = ExtResource("1_se3dv")
+metadata/_custom_type_script = "uid://blmbveo2laj6o"

@@ -1,6 +1,7 @@
 [gd_resource type="Resource" script_class="PokemonData" format=3 uid="uid://cy85vi08373md"]
 
-[ext_resource type="Script" uid="uid://bgjy7k2fft1v2" path="res://data/pokemon/pokemon_data.gd" id="1_rpvgx"]
+[ext_resource type="Resource" uid="uid://btsq8inx0iur4" path="res://data/abilities/static.tres" id="1_720ru"]
+[ext_resource type="Script" uid="uid://blmbveo2laj6o" path="res://data/pokemon/pokemon_data.gd" id="1_rpvgx"]
 [ext_resource type="Resource" uid="uid://4mq6s2ulea4s" path="res://data/moves/thunder_shock.tres" id="2_etaeq"]
 
 [resource]
@@ -13,4 +14,4 @@ max_hp = 2
 types = Array[int]([5])
 rarity = &"starter"
 move = ExtResource("2_etaeq")
-metadata/_custom_type_script = "uid://bgjy7k2fft1v2"
+ability = ExtResource("1_720ru")

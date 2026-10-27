@@ -1,0 +1,16 @@
+[gd_resource type="Resource" script_class="PokemonData" format=3 uid="uid://bdlepi7s1hl70"]
+
+[ext_resource type="Script" uid="uid://blmbveo2laj6o" path="res://data/pokemon/pokemon_data.gd" id="1_hj51l"]
+[ext_resource type="Resource" uid="uid://44nyfhv83l6o" path="res://data/abilities/pickup.tres" id="1_q75vp"]
+
+[resource]
+script = ExtResource("1_hj51l")
+id = &"meowth"
+display_name = "Meowth"
+cost = 1
+attack = 2
+max_hp = 3
+types = Array[int]([1])
+rarity = &"common"
+ability = ExtResource("1_q75vp")
+metadata/_custom_type_script = "uid://blmbveo2laj6o"

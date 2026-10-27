@@ -1,0 +1,11 @@
+[gd_resource type="Resource" script_class="Ability" format=3 uid="uid://bcp4ktqldcfup"]
+
+[ext_resource type="Script" uid="uid://d1a0fpfuvmsjg" path="res://data/abilities/ability.gd" id="1_oftia"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_srha1"]
+
+[resource]
+script = ExtResource("1_oftia")
+id = "sturdy"
+display_name = "Sturdy"
+spill_divisor = 2
+metadata/_custom_type_script = "uid://d1a0fpfuvmsjg"

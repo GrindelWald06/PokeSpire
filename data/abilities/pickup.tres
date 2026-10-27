@@ -1,0 +1,24 @@
+[gd_resource type="Resource" script_class="Ability" format=3 uid="uid://44nyfhv83l6o"]
+
+[ext_resource type="Script" uid="uid://d1a0fpfuvmsjg" path="res://data/abilities/ability.gd" id="1_3x4to"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_o4m1p"]
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="3_tm1xw"]
+[ext_resource type="Script" uid="uid://cxlkw2cgvtosy" path="res://data/effects/draw_effect.gd" id="4_6oidd"]
+
+[sub_resource type="Resource" id="Resource_6oidd"]
+script = ExtResource("4_6oidd")
+amount = 1
+metadata/_custom_type_script = "uid://cxlkw2cgvtosy"
+
+[sub_resource type="Resource" id="Resource_tm1xw"]
+script = ExtResource("2_o4m1p")
+hook = 4
+effects = Array[ExtResource("3_tm1xw")]([SubResource("Resource_6oidd")])
+metadata/_custom_type_script = "uid://wanm38nreyeo"
+
+[resource]
+script = ExtResource("1_3x4to")
+id = "pickup"
+display_name = "Pickup"
+triggers = Array[ExtResource("2_o4m1p")]([SubResource("Resource_tm1xw")])
+metadata/_custom_type_script = "uid://d1a0fpfuvmsjg"

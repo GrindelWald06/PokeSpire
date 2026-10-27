@@ -1,0 +1,19 @@
+[gd_resource type="Resource" script_class="MoveData" format=3 uid="uid://bfaqnnykyr1i1"]
+
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="1_d5fup"]
+[ext_resource type="Script" uid="uid://b3vucmasg4hno" path="res://data/moves/move_data.gd" id="2_dxkam"]
+[ext_resource type="Script" uid="uid://btu52bwh0ljwe" path="res://data/effects/damage_effect.gd" id="2_wovit"]
+
+[sub_resource type="Resource" id="Resource_wovit"]
+script = ExtResource("2_wovit")
+amount = 1
+metadata/_custom_type_script = "uid://btu52bwh0ljwe"
+
+[resource]
+script = ExtResource("2_dxkam")
+id = &"rock_tomb"
+display_name = "Rock Tomb"
+cost = 1
+type = 7
+effects = Array[ExtResource("1_d5fup")]([SubResource("Resource_wovit")])
+metadata/_custom_type_script = "uid://b3vucmasg4hno"
