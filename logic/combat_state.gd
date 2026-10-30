@@ -140,7 +140,7 @@ func play_card(side_index:int, hand_index:int) -> bool:
 	if card_to_play.cost > side.energy:
 		print("Not enough energy to play")
 		return false
-	if side.board.size() > side.BOARD_LIMIT:
+	if side.board.size() >= side.BOARD_LIMIT:
 		print("Not enough slots in the board to play")
 		return false
 	
@@ -259,11 +259,13 @@ func fire(hook:StringName, unit:Unit, args:Array = []) -> void:
 	for source in unit.get_hook_sources():
 		if not source.has_method(hook):
 			push_error("No hook named %s found" % hook)
+			continue
 		source.callv(hook, [self, unit] + args)
 
 func modify(hook:StringName, unit:Unit, value:int, args:Array = []) -> int:
 	for source in unit.get_hook_sources():
 		if not source.has_method(hook):
 			push_error("No hook named %s found" % hook)
+			continue
 		value = source.callv(hook, [self, unit] + args + [value])
 	return value

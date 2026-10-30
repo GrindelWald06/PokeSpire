@@ -34,11 +34,11 @@ func add_status(status: Status.STATUS, turn: int) -> bool:
 
 func get_attack() -> int:
 	var amount = attack + temp_attack_modifier
-	if has_status(Status.STATUS.BURN):
-		return max(0, amount-1)
 	for source in get_hook_sources():
 		amount = source.modify_attack(null, self, amount)
-	return amount
+	if has_status(Status.STATUS.BURN):
+		amount -= 1
+	return max(0, amount)
 
 func get_hook_sources() -> Array:
 	var sources := []

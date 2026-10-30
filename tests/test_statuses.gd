@@ -13,6 +13,7 @@ static func run() -> void:
 	dead_target_not_burned()
 	paralysis_lifecycle()
 	paralysis_on_summoned_unit()
+	burn_keeps_ability_bonus()
 
 static func burn_applies_and_ticks() -> void:
 	var c := TestKit.make_combat()
@@ -104,3 +105,13 @@ static func paralysis_on_summoned_unit() -> void:
 	TestKit.check(not summoned.has_status(PAR), "status gone")
 	c.end_turn()
 	TestKit.check(summoned.can_act == true, "acts the turn after")
+
+static func burn_keeps_ability_bonus() -> void:
+	var c := TestKit.make_combat()
+	var ch := TestKit.add_unit(c, "charmander", 0)  # 2 attack
+	ch.data = ch.data.duplicate()
+	ch.data.ability = Ability.new()
+	ch.data.ability.attack_bonus = 2
+	TestKit.check(ch.get_attack() == 4, "ability bonus applies")
+	ch.add_status(BURN, -1)
+	TestKit.check(ch.get_attack() == 3, "burn keeps ability bonus (2 + 2 - 1)")

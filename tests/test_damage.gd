@@ -16,6 +16,7 @@ static func run() -> void:
 	win_condition()
 	reshuffle()
 	type_chart()
+	board_limit()
 
 static func spill() -> void:
 	var c := TestKit.make_combat()
@@ -134,3 +135,13 @@ static func type_chart() -> void:
 	TestKit.check(TypeChart.apply(3, -1) == 1, "apply -1 halves")
 	TestKit.check(TypeChart.apply(1, -1) == 1, "apply -1 minimum is 1")
 	TestKit.check(TypeChart.apply(3, 0) == 3, "apply 0 unchanged")
+
+static func board_limit() -> void:
+	var c := TestKit.make_combat()
+	for i in range(Side.BOARD_LIMIT):
+		TestKit.add_unit(c, "squirtle", 0)
+	TestKit.set_hand(c, 0, ["bulbasaur"])
+	c.sides[0].energy = 3
+	TestKit.check(c.play_card(0, 0) == false, "play_card refused on a full board")
+	TestKit.check(c.sides[0].board.size() == Side.BOARD_LIMIT, "board stays at the limit")
+	TestKit.check(c.sides[0].hand.size() == 1 and c.sides[0].energy == 3, "refused card keeps hand and energy")

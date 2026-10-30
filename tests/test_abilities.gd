@@ -10,6 +10,7 @@ static func run() -> void:
 	static_ability()
 	regenerator()
 	pickup()
+	missing_hook_is_skipped()
 
 static func quick() -> void:
 	var c := TestKit.make_combat()
@@ -151,3 +152,10 @@ static func pickup() -> void:
 	var m2 := TestKit.add_unit(c2, "meowth", 0)
 	c2.damage_unit(m2, 5)
 	TestKit.check(c2.sides[0].hand.size() <= 1, "Pickup with an empty deck doesn't crash")
+
+static func missing_hook_is_skipped() -> void:
+	var c := TestKit.make_combat()
+	var g := TestKit.add_unit(c, "geodude", 0)
+	c.fire(&"on_missing_hook", g)
+	TestKit.check(g.is_alive(), "fire skips a missing hook")
+	TestKit.check(c.modify(&"modify_missing_hook", g, 5) == 5, "modify keeps value on a missing hook")
