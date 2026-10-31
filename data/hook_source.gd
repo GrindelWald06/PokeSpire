@@ -66,5 +66,5 @@ func _target_is_valid(trigger, target) -> bool:
 	if target.is_alive(): return true
 	return trigger.hook == AbilityTrigger.Hook.ON_DEATH and trigger.target == AbilityTrigger.Target.SELF
 
-func _intensity_for(unit) -> int:
+func _intensity_for(_unit: Unit) -> int:
 	return 1

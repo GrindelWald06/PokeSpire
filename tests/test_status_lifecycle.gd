@@ -34,9 +34,9 @@ static func countdown_fires_on_last_turn() -> void:
 
 	c.end_turn()  # owner turn 1 ends
 	TestKit.check(fired.size() == 1, "countdown: fires on first owner turn end")
-	TestKit.check(u.status_effects.get(s, 0) == 1, "countdown: 2 -> 1 after first owner turn")
+	TestKit.check(u.get_turns(s) == 1, "countdown: 2 -> 1 after first owner turn")
 	c.end_turn()  # opponent turn ends
-	TestKit.check(u.status_effects.get(s, 0) == 1, "countdown: opponent turn end does not tick it")
+	TestKit.check(u.get_turns(s) == 1, "countdown: opponent turn end does not tick it")
 	c.end_turn()  # owner turn 2 ends (last turn)
 	TestKit.check(fired.size() == 2, "countdown: fires on its last turn (trigger before decrement)")
 	TestKit.check(not u.has_status(s), "countdown: erased after its last turn")
@@ -48,7 +48,7 @@ static func countdown_fires_on_last_turn() -> void:
 	u.add_status(p, p.default_turns)
 	c.end_turn()
 	c.end_turn()
-	TestKit.check(u.status_effects.get(p, 0) == -1, "countdown: -1 never ticks down")
+	TestKit.check(u.get_turns(p) == -1, "countdown: -1 never ticks down")
 
 # 5b: modifiers add up unclamped, and the single clamp sits at the end of get_attack().
 static func attack_modifier_stacks_with_ability() -> void:

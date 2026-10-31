@@ -42,31 +42,37 @@ func decrement_status_turn() -> void:
 func has_status(status: StatusData) -> bool:
 	return statuses.has(status)
 
-func add_status(status: StatusData, turns:int, stacks:int) -> bool:
+func add_status(status: StatusData, turns: int, stacks: int = 1) -> bool:
 	if not has_status(status):
-		statuses[status] = StatusInstance.new(turns)
+		var fresh := StatusInstance.new(turns)
+		fresh.intensity = _cap_intensity(status, stacks)
+		statuses[status] = fresh
 		return true
-	var changed = false
+
+	var instance: StatusInstance = statuses[status]
+	var old_turns := instance.turns
+	var old_intensity := instance.intensity
+
 	match status.duration_stacking:
 		StatusData.DurationStacking.KEEP:
 			pass
 		StatusData.DurationStacking.REFRESH:
-			changed = turns != statuses[status].turns
-			statuses[status].turns = turns
+			instance.turns = turns
 		StatusData.DurationStacking.ADD:
-			changed = turns != statuses[status].turns
-			if -1 in [statuses[status].turns, turns]:
-				statuses[status].turns = -1
+			if instance.turns == -1 or turns == -1:
+				instance.turns = -1
 			else:
-				statuses[status].turns += turns
+				instance.turns += turns
+
 	if status.stack_intensity:
-		var current_intensity = statuses[status].intensity
-		var new_intensity = current_intensity + stacks
-		if status.max_intensity != 0:
-			new_intensity = min(new_intensity, status.max_intensity)
-		changed = current_intensity != new_intensity
-		statuses[status].intensity = new_intensity
-	return changed
+		instance.intensity = _cap_intensity(status, instance.intensity + stacks)
+
+	return instance.turns != old_turns or instance.intensity != old_intensity
+
+func _cap_intensity(status: StatusData, value: int) -> int:
+	if status.max_intensity > 0:
+		return mini(value, status.max_intensity)
+	return value
 
 func remove_status(status: StatusData) -> void:
 	statuses.erase(status)

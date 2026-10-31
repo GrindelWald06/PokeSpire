@@ -4,18 +4,17 @@ extends RefCounted
 static func run() -> void:
 	print("--- status data ---")
 	add_has_remove()
-	ignore_stacking()
+	keep_stacking()
 	refresh_stacking()
-	add_stacking_not_implemented()
 	literal_minus_one()
 	units_are_isolated()
 	hook_sources()
 
-static func make_status(stacking: StatusData.STACKING, default_turns: int = 1) -> StatusData:
+static func make_status(stacking: StatusData.DurationStacking, default_turns: int = 1) -> StatusData:
 	var s := StatusData.new()
 	s.id = &"test_status"
 	s.display_name = "Test"
-	s.stacking = stacking
+	s.duration_stacking = stacking
 	s.default_turns = default_turns
 	return s
 
@@ -24,49 +23,41 @@ static func unit() -> Unit:
 
 static func add_has_remove() -> void:
 	var u := unit()
-	var s := make_status(StatusData.STACKING.IGNORE)
+	var s := make_status(StatusData.DurationStacking.KEEP)
 	TestKit.check(not u.has_status(s), "new unit has no status data")
 	TestKit.check(u.add_status(s, 2), "adding a new status returns true")
 	TestKit.check(u.has_status(s), "has_status true after add")
-	TestKit.check(u.status_effects[s] == 2, "turns stored as given")
+	TestKit.check(u.get_turns(s) == 2, "turns stored as given")
 	u.remove_status(s)
 	TestKit.check(not u.has_status(s), "has_status false after remove")
 	u.remove_status(s)
 	TestKit.check(not u.has_status(s), "removing an absent status is harmless")
 
-static func ignore_stacking() -> void:
+static func keep_stacking() -> void:
 	var u := unit()
-	var s := make_status(StatusData.STACKING.IGNORE)
+	var s := make_status(StatusData.DurationStacking.KEEP)
 	u.add_status(s, 3)
-	TestKit.check(u.add_status(s, 1) == false, "IGNORE refuses a duplicate")
-	TestKit.check(u.status_effects[s] == 3, "IGNORE keeps the original turns")
+	TestKit.check(u.add_status(s, 1) == false, "KEEP refuses a duplicate")
+	TestKit.check(u.get_turns(s) == 3, "KEEP keeps the original turns")
 
 static func refresh_stacking() -> void:
 	var u := unit()
-	var s := make_status(StatusData.STACKING.REFRESH)
+	var s := make_status(StatusData.DurationStacking.REFRESH)
 	u.add_status(s, 1)
 	TestKit.check(u.add_status(s, 3), "REFRESH accepts a duplicate")
-	TestKit.check(u.status_effects[s] == 3, "REFRESH overwrites the turns")
-
-static func add_stacking_not_implemented() -> void:
-	# Documents current behavior. Update this test when ADD is implemented for Poison.
-	var u := unit()
-	var s := make_status(StatusData.STACKING.ADD)
-	u.add_status(s, 1)
-	TestKit.check(u.add_status(s, 1) == false, "ADD is not implemented yet (returns false)")
-	TestKit.check(u.status_effects[s] == 1, "ADD leaves turns unchanged for now")
+	TestKit.check(u.get_turns(s) == 3, "REFRESH overwrites the turns")
 
 static func literal_minus_one() -> void:
 	var u := unit()
-	var s := make_status(StatusData.STACKING.IGNORE, 5)
+	var s := make_status(StatusData.DurationStacking.KEEP, 5)
 	u.add_status(s, -1)
-	TestKit.check(u.status_effects[s] == -1, "-1 is stored literally, not replaced by default_turns")
+	TestKit.check(u.get_turns(s) == -1, "-1 is stored literally, not replaced by default_turns")
 
 static func units_are_isolated() -> void:
 	var c := TestKit.make_combat()
 	var a := TestKit.add_unit(c, "charmander", 0)
 	var b := TestKit.add_unit(c, "squirtle", 1)
-	var s := make_status(StatusData.STACKING.IGNORE)
+	var s := make_status(StatusData.DurationStacking.KEEP)
 	a.add_status(s, 2)
 	TestKit.check(not b.has_status(s), "status data is per unit")
 	TestKit.check(b.add_status(s, 1), "other unit can still receive it")
@@ -76,7 +67,7 @@ static func hook_sources() -> void:
 	var c := TestKit.make_combat()
 	var u := TestKit.add_unit(c, "charmander", 0)  # no ability
 	var s := StatusData.new()
-	s.stacking = StatusData.STACKING.IGNORE
+	s.duration_stacking = StatusData.DurationStacking.KEEP
 	var trig := AbilityTrigger.new()
 	trig.hook = AbilityTrigger.Hook.ON_TURN_END
 	trig.target = AbilityTrigger.Target.SELF

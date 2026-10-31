@@ -52,9 +52,9 @@ static func static_ability() -> void:
 	pika.current_hp = 5
 	pidgey.current_hp = 6
 	c.attack(pidgey, pika)
-	TestKit.check(pidgey.status_effects.get(PAR, 0) == 2, "Static paralyzes with 2 turns")
+	TestKit.check(pidgey.get_turns(PAR) == 2, "Static paralyzes with 2 turns")
 	c.end_turn()
-	TestKit.check(pidgey.status_effects.get(PAR, 0) == 1, "tick: 2 -> 1")
+	TestKit.check(pidgey.get_turns(PAR) == 1, "tick: 2 -> 1")
 	c.end_turn()
 	TestKit.check(pidgey.can_act == false, "attacker loses its next turn")
 	c.end_turn()
@@ -94,7 +94,7 @@ static func static_ability() -> void:
 	var pg5 := TestKit.add_unit(c5, "pidgey", 0)
 	pg5.add_status(PAR, 1)
 	c5.fire(&"on_attacked", pk5, [pg5])
-	TestKit.check(pg5.status_effects.get(PAR, 0) == 1, "Static doesn't overwrite existing paralysis")
+	TestKit.check(pg5.get_turns(PAR) == 1, "Static doesn't overwrite existing paralysis")
 
 static func regenerator() -> void:
 	var c := TestKit.make_combat()
