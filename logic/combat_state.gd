@@ -15,8 +15,7 @@ signal turn_started(side_index:int)
 signal move_used(user:Unit, move:MoveData, target:Unit)
 signal combat_ended(winner_side:int)
 signal status_applied(unit:Unit, status:Status.STATUS)
-signal status_damage(unit:Unit, amount:int)
-signal ability_triggered(unit:Unit, ability:Ability)
+signal ability_triggered(unit:Unit, ability:HookSource)
 signal unit_healed(unit:Unit, amount:int)
 
 func _init() -> void:
@@ -78,7 +77,7 @@ func start_turn(side_index:int) -> void:
 	
 	# allow units to act
 	for unit in sides[side_index].board:
-		unit.can_act = not unit.has_status(Status.STATUS.PARALYSIS)
+		unit.can_act = not (unit.has_status(Status.STATUS.PARALYSIS) or unit.is_blocked())
 		fire(&"on_turn_start", unit)
 
 	# draw a card
@@ -93,7 +92,6 @@ func end_turn() -> void:
 	for unit in sides[active_side].board.duplicate():
 		# Apply burn damage
 		if unit.has_status(Status.STATUS.BURN):
-			status_damage.emit(unit, Status.STATUS.BURN)
 			damage_unit(unit, 1, false)
 		if not unit.is_alive():
 			continue
@@ -106,6 +104,11 @@ func end_turn() -> void:
 				unit.statuses[status] -= 1
 				if unit.statuses[status] == 0:
 					unit.statuses.erase(status)
+		for status in unit.status_effects.keys():
+			if unit.status_effects[status] >= 1:
+				unit.status_effects[status] -= 1
+				if unit.status_effects[status] == 0:
+					unit.status_effects.erase(status)
 
 	if is_over:
 		print("Combat is over")
@@ -157,6 +160,8 @@ func _attack_error(attacker:Unit, target:Unit) -> String:
 		return "%s not in the active side" % attacker.data.display_name
 	if attacker.has_status(Status.STATUS.PARALYSIS):
 		return "%s is Paralyzed and can not attack" % attacker.data.display_name
+	if attacker.is_blocked():
+		return "%s prevented attack" % attacker.get_blocker().display_name
 	if not attacker.can_act:
 		return "%s can't act" % attacker.data.display_name
 	if target == null:
@@ -198,6 +203,8 @@ func _move_error(user:Unit, target:Unit) -> String:
 		return "Can't use moves out of turn"
 	if user.has_status(Status.STATUS.PARALYSIS):
 		return "%s is Paralyzed and can not use move" % user.data.display_name
+	if user.is_blocked():
+		return "%s prevented using move" % user.get_blocker().display_name
 	if not user.can_act:
 		return "%s can't act" % user.data.display_name
 	var move_to_use = user.data.move

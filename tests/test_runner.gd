@@ -6,4 +6,5 @@ func _ready() -> void:
 	TestMoves.run()
 	TestStatuses.run()
 	TestAbilities.run()
+	TestStatusData.run()
 	TestKit.summary()

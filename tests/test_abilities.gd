@@ -11,6 +11,7 @@ static func run() -> void:
 	regenerator()
 	pickup()
 	missing_hook_is_skipped()
+	aftermath_side()
 
 static func quick() -> void:
 	var c := TestKit.make_combat()
@@ -159,3 +160,43 @@ static func missing_hook_is_skipped() -> void:
 	c.fire(&"on_missing_hook", g)
 	TestKit.check(g.is_alive(), "fire skips a missing hook")
 	TestKit.check(c.modify(&"modify_missing_hook", g, 5) == 5, "modify keeps value on a missing hook")
+
+static func aftermath_side() -> void:
+	# Owner (side 1) is NOT the active side when Koffing dies.
+	var c := TestKit.make_combat()
+	c.active_side = 0
+	var koffing := TestKit.add_unit(c, "koffing", 1)   # 4 HP
+	var ally := TestKit.add_unit(c, "squirtle", 1)     # owner's own team, 4 HP
+	var foe_a := TestKit.add_unit(c, "charmander", 0)  # 2 HP
+	var foe_b := TestKit.add_unit(c, "bulbasaur", 0)   # 3 HP
+	c.damage_unit(koffing, 4)                          # exact kill, no spill
+	TestKit.check(not koffing.is_alive(), "aftermath: koffing died")
+	TestKit.check(foe_a.current_hp == 1 and foe_b.current_hp == 2, "aftermath hits the opponent's board, not the active side's")
+	TestKit.check(ally.current_hp == 4, "aftermath never hits the owner's own team")
+	TestKit.check(c.sides[0].hero_hp == 30 and c.sides[1].hero_hp == 30, "aftermath damage causes no hero damage")
+
+	# Owner IS the active side: same result, mirrored.
+	var c2 := TestKit.make_combat()
+	c2.active_side = 1
+	var koffing2 := TestKit.add_unit(c2, "koffing", 1)
+	var ally2 := TestKit.add_unit(c2, "squirtle", 1)
+	var foe2 := TestKit.add_unit(c2, "charmander", 0)
+	c2.damage_unit(koffing2, 4)
+	TestKit.check(foe2.current_hp == 1, "aftermath hits enemies when the owner is active")
+	TestKit.check(ally2.current_hp == 4, "owner's team untouched when the owner is active")
+
+	# Announced once, even with several targets.
+	var c3 := TestKit.make_combat()
+	var rec := TestRec.new(c3)
+	var k3 := TestKit.add_unit(c3, "koffing", 1)
+	TestKit.add_unit(c3, "charmander", 0)
+	TestKit.add_unit(c3, "squirtle", 0)
+	c3.damage_unit(k3, 4)
+	TestKit.check(rec.abilities == 1, "aftermath announced once for multiple targets")
+
+	# No enemies: nothing to hit, nothing announced.
+	var c4 := TestKit.make_combat()
+	var rec4 := TestRec.new(c4)
+	var k4 := TestKit.add_unit(c4, "koffing", 1)
+	c4.damage_unit(k4, 4)
+	TestKit.check(rec4.abilities == 0, "aftermath with no enemies is not announced")

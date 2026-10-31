@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="Ability" format=3 uid="uid://12wod15upds8"]
+
+[ext_resource type="Script" uid="uid://d1a0fpfuvmsjg" path="res://data/abilities/ability.gd" id="1_imdj3"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_1w8cg"]
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="3_gunwm"]
+[ext_resource type="Script" uid="uid://btu52bwh0ljwe" path="res://data/effects/damage_effect.gd" id="4_b8g4l"]
+
+[sub_resource type="Resource" id="Resource_b8g4l"]
+script = ExtResource("4_b8g4l")
+amount = 1
+metadata/_custom_type_script = "uid://btu52bwh0ljwe"
+
+[sub_resource type="Resource" id="Resource_gunwm"]
+script = ExtResource("2_1w8cg")
+hook = 4
+target = 2
+effects = Array[ExtResource("3_gunwm")]([SubResource("Resource_b8g4l")])
+metadata/_custom_type_script = "uid://wanm38nreyeo"
+
+[resource]
+script = ExtResource("1_imdj3")
+id = &"aftermath"
+display_name = "Aftermath"
+triggers = Array[ExtResource("2_1w8cg")]([SubResource("Resource_gunwm")])
+metadata/_custom_type_script = "uid://d1a0fpfuvmsjg"

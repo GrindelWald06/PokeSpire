@@ -1,0 +1,25 @@
+[gd_resource type="Resource" script_class="StatusData" format=3 uid="uid://cagddiigigo3n"]
+
+[ext_resource type="Script" uid="uid://fvck4684rcqs" path="res://data/status_data.gd" id="1_4wqvr"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_pweti"]
+[ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="3_f1bh8"]
+[ext_resource type="Script" uid="uid://btu52bwh0ljwe" path="res://data/effects/damage_effect.gd" id="4_1pvsc"]
+
+[sub_resource type="Resource" id="Resource_1pvsc"]
+script = ExtResource("4_1pvsc")
+amount = 1
+metadata/_custom_type_script = "uid://btu52bwh0ljwe"
+
+[sub_resource type="Resource" id="Resource_f1bh8"]
+script = ExtResource("2_pweti")
+hook = 2
+effects = Array[ExtResource("3_f1bh8")]([SubResource("Resource_1pvsc")])
+metadata/_custom_type_script = "uid://wanm38nreyeo"
+
+[resource]
+script = ExtResource("1_4wqvr")
+stacking = 1
+id = &"poison"
+display_name = "Poison"
+triggers = Array[ExtResource("2_pweti")]([SubResource("Resource_f1bh8")])
+metadata/_custom_type_script = "uid://fvck4684rcqs"
