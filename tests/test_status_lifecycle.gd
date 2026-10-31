@@ -2,13 +2,14 @@ class_name TestStatusLifecycle
 extends RefCounted
 
 # Covers Step 5a-5c of the data-driven status refactor:
-# duration countdown, attack_modifier through get_attack(), and blocks_action.
+# duration countdown, attack_modifier through CombatState.get_attack(), and blocks_action.
 
 static func run() -> void:
 	print("--- status lifecycle ---")
 	countdown_fires_on_last_turn()
 	attack_modifier_stacks_with_ability()
 	blocker_freezes_unit()
+	quick_respects_any_blocker()
 
 static func make_status(display_name: String, default_turns: int) -> StatusData:
 	var s := StatusData.new()
@@ -50,7 +51,7 @@ static func countdown_fires_on_last_turn() -> void:
 	c.end_turn()
 	TestKit.check(u.get_turns(p) == -1, "countdown: -1 never ticks down")
 
-# 5b: modifiers add up unclamped, and the single clamp sits at the end of get_attack().
+# 5b: modifiers add up unclamped, and the single clamp sits at the end of CombatState.get_attack().
 static func attack_modifier_stacks_with_ability() -> void:
 	var c := TestKit.make_combat()
 	var u := TestKit.add_unit(c, "bulbasaur", 0)
@@ -61,18 +62,18 @@ static func attack_modifier_stacks_with_ability() -> void:
 	var weak := make_status("Weak", -1)
 	weak.attack_modifier = -1
 
-	TestKit.check(u.get_attack() == 2, "attack mod: base 0 + ability 2 = 2")
+	TestKit.check(c.get_attack(u) == 2, "attack mod: base 0 + ability 2 = 2")
 	u.add_status(weak, -1)
 	# Statuses run before the ability. A per-step clamp would give max(0, 0 - 1) + 2 = 2.
-	TestKit.check(u.get_attack() == 1, "attack mod: 0 - 1 + 2 = 1, no clamp in between")
+	TestKit.check(c.get_attack(u) == 1, "attack mod: 0 - 1 + 2 = 1, no clamp in between")
 
 	u.data.ability = null
-	TestKit.check(u.get_attack() == 0, "attack mod: 0 - 1 clamps to 0 at the end")
+	TestKit.check(c.get_attack(u) == 0, "attack mod: 0 - 1 clamps to 0 at the end")
 
 	u.attack = 3
 	u.data.ability = Ability.new()
 	u.data.ability.attack_bonus = 2
-	TestKit.check(u.get_attack() == 4, "attack mod: 3 - 1 + 2 = 4")
+	TestKit.check(c.get_attack(u) == 4, "attack mod: 3 - 1 + 2 = 4")
 
 # 5c: a blocks_action status stops attacks and moves with a message naming it,
 # and lifts after its duration.
@@ -90,6 +91,7 @@ static func blocker_freezes_unit() -> void:
 	c.end_turn()  # start_turn(1)
 	TestKit.check(u.can_act == false, "blocker: start_turn leaves the unit unable to act")
 	TestKit.check(c._attack_error(u, target).contains(block.display_name), "blocker: attack refusal names the status")
+	TestKit.check(c._attack_error(u, target).contains(u.data.display_name), "blocker: attack refusal names the unit")
 	TestKit.check(c._move_error(u, target).contains(block.display_name), "blocker: move refusal names the status")
 	var hp_before := target.current_hp
 	TestKit.check(c.attack(u, target) == false, "blocker: attack refused")
@@ -101,3 +103,13 @@ static func blocker_freezes_unit() -> void:
 	TestKit.check(u.get_blocker() == null, "blocker: get_blocker null when nothing blocks")
 	c.end_turn()  # start_turn(1) again
 	TestKit.check(u.can_act == true, "blocker: unit acts again the next turn")
+# Quick checks is_blocked(), not paralysis specifically.
+static func quick_respects_any_blocker() -> void:
+	var c := TestKit.make_combat()
+	var p := TestKit.add_unit(c, "pidgey", 0)  # Quick Feet
+	var freeze := make_status("Frozen Test", 1)
+	freeze.blocks_action = true
+	p.add_status(freeze, 1)
+	p.can_act = false
+	c.fire(&"on_summoned", p)
+	TestKit.check(p.can_act == false, "blocker: Quick respects any blocks_action status")

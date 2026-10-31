@@ -10,7 +10,7 @@ enum DurationStacking { KEEP, REFRESH, ADD }
 @export var max_intensity:int = 0
 
 # Called when a unit attacked
-func modify_attack (state:CombatState, unit: Unit, value:int) -> int:
+func modify_attack (_state:CombatState, _unit: Unit, value:int) -> int:
 	return value + attack_modifier
 
 func _intensity_for(unit) -> int:

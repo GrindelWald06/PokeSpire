@@ -25,7 +25,7 @@ static func quick() -> void:
 	TestKit.check(pidgey.can_act, "Quick unit can act on summon")
 	TestKit.check(not bulb.can_act, "normal unit cannot")
 	TestKit.check(c.attack(pidgey, null), "Quick unit attacks the same turn")
-	TestKit.check(c.sides[1].hero_hp == 30 - pidgey.get_attack(), "Quick attack hits hero")
+	TestKit.check(c.sides[1].hero_hp == 30 - c.get_attack(pidgey), "Quick attack hits hero")
 	TestKit.check(c.attack(bulb, null) == false, "control unit refused")
 
 	var c2 := TestKit.make_combat()

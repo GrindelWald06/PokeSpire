@@ -86,12 +86,6 @@ func get_blocker() -> StatusData:
 			return status
 	return null
 
-func get_attack() -> int:
-	var amount = attack + temp_attack_modifier
-	for source in get_hook_sources():
-		amount = source.modify_attack(null, self, amount)
-	return max(0, amount)
-
 func get_hook_sources() -> Array[HookSource]:
 	var sources: Array[HookSource] = []
 	# Statuses first, so they trigger before abilities (burn before Regenerator).

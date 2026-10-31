@@ -5,7 +5,7 @@ class_name Ability extends HookSource
 @export var incoming_damage_reduction: int = 0
 
 # Called when a unit is damaged
-func modify_incoming_damage (state: CombatState, unit: Unit, amount: int) -> int:
+func modify_incoming_damage (_state: CombatState, _unit: Unit, amount: int) -> int:
 	return max(0, amount - incoming_damage_reduction)
 
 # Called when damage spilled
@@ -17,5 +17,5 @@ func modify_spill (state: CombatState, unit: Unit, spill: int) -> int:
 	return result
 
 # Called when a unit attack
-func modify_attack (state:CombatState, unit: Unit, value:int) -> int:
+func modify_attack (_state:CombatState, _unit: Unit, value:int) -> int:
 	return value + attack_bonus

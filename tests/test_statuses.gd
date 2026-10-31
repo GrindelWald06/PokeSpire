@@ -34,8 +34,8 @@ static func burn_reduces_attack() -> void:
 	var sq := TestKit.add_unit(c, "squirtle", 1)
 	ch.add_status(BURN, -1)
 	sq.add_status(BURN, -1)
-	TestKit.check(ch.get_attack() == 1, "burn gives -1 attack")
-	TestKit.check(sq.get_attack() == 0, "attack never below 0")
+	TestKit.check(c.get_attack(ch) == 1, "burn gives -1 attack")
+	TestKit.check(c.get_attack(sq) == 0, "attack never below 0")
 
 static func burn_kill() -> void:
 	var c := TestKit.make_combat()
@@ -112,6 +112,6 @@ static func burn_keeps_ability_bonus() -> void:
 	ch.data = ch.data.duplicate()
 	ch.data.ability = Ability.new()
 	ch.data.ability.attack_bonus = 2
-	TestKit.check(ch.get_attack() == 4, "ability bonus applies")
+	TestKit.check(c.get_attack(ch) == 4, "ability bonus applies")
 	ch.add_status(BURN, -1)
-	TestKit.check(ch.get_attack() == 3, "burn keeps ability bonus (2 + 2 - 1)")
+	TestKit.check(c.get_attack(ch) == 3, "burn keeps ability bonus (2 + 2 - 1)")

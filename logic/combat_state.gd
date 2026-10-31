@@ -144,7 +144,7 @@ func _attack_error(attacker:Unit, target:Unit) -> String:
 	if not attacker in sides[active_side].board:
 		return "%s not in the active side" % attacker.data.display_name
 	if attacker.is_blocked():
-		return "%s prevented attack" % attacker.get_blocker().display_name
+		return "%s is blocked by %s and can't attack" % [attacker.data.display_name, attacker.get_blocker().display_name]
 	if not attacker.can_act:
 		return "%s can't act" % attacker.data.display_name
 	if target == null:
@@ -170,11 +170,11 @@ func attack(attacker:Unit, target:Unit) -> bool:
 	attacker.can_act = false
 	unit_attacked.emit(attacker, target)
 	if target == null:
-		damage_hero(opponent_of(active_side), attacker.get_attack())
+		damage_hero(opponent_of(active_side), get_attack(attacker))
 	else:
 		# Trade handling
-		var damage_taken = target.get_attack()
-		damage_unit(target, attacker.get_attack())
+		var damage_taken := get_attack(target)
+		damage_unit(target, get_attack(attacker))
 		damage_unit(attacker, damage_taken, false)
 		fire(&"on_attacked", target, [attacker])
 	return true
@@ -185,7 +185,7 @@ func _move_error(user:Unit, target:Unit) -> String:
 	if user.side_index != active_side:
 		return "Can't use moves out of turn"
 	if user.is_blocked():
-		return "%s prevented using move" % user.get_blocker().display_name
+		return "%s is blocked by %s and can't use a move" % [user.data.display_name, user.get_blocker().display_name]
 	if not user.can_act:
 		return "%s can't act" % user.data.display_name
 	var move_to_use = user.data.move
@@ -252,7 +252,6 @@ func fire(hook:StringName, unit:Unit, args:Array = []) -> void:
 			push_error("No hook named %s found" % hook)
 			continue
 		source.callv(hook, [self, unit] + args)
-		
 
 func modify(hook:StringName, unit:Unit, value:int, args:Array = []) -> int:
 	for source in unit.get_hook_sources():
@@ -261,3 +260,7 @@ func modify(hook:StringName, unit:Unit, value:int, args:Array = []) -> int:
 			continue
 		value = source.callv(hook, [self, unit] + args + [value])
 	return value
+
+func get_attack(unit: Unit) -> int:
+	var amount := modify(&"modify_attack", unit, unit.attack + unit.temp_attack_modifier)
+	return maxi(0, amount)

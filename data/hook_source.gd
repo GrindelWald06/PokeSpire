@@ -28,15 +28,15 @@ func on_death (state: CombatState, unit: Unit) -> void:
 
 
 # Called when a unit is damaged
-func modify_incoming_damage (state: CombatState, unit: Unit, amount: int) -> int:
+func modify_incoming_damage (_state: CombatState, _unit: Unit, amount: int) -> int:
 	return amount
 
 # Called when damage spilled
-func modify_spill (state: CombatState, unit: Unit, spill: int) -> int:
+func modify_spill (_state: CombatState, _unit: Unit, spill: int) -> int:
 	return spill
 
 # Called when a unit attacks
-func modify_attack (state:CombatState, unit: Unit, value:int) -> int:
+func modify_attack (_state:CombatState, _unit: Unit, value:int) -> int:
 	return value
 
 func _run_triggers(hook:AbilityTrigger.Hook, state:CombatState, unit:Unit, other:Unit):
