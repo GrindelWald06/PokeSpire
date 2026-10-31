@@ -49,7 +49,7 @@ func _run_triggers(hook:AbilityTrigger.Hook, state:CombatState, unit:Unit, other
 			if not announced:
 				state.ability_triggered.emit(unit, self)
 				announced = true
-			var ctx = EffectContext.new(state, unit, target, false)
+			var ctx = EffectContext.new(state, unit, target, false, Types.Type.NONE, _intensity_for(unit))
 			for effect in trigger.effects:
 				if not _target_is_valid(trigger, target): break   # point 6
 				effect.resolve(ctx)
@@ -65,3 +65,6 @@ func _collect_targets(trigger, state, unit, other) -> Array[Unit]:
 func _target_is_valid(trigger, target) -> bool:
 	if target.is_alive(): return true
 	return trigger.hook == AbilityTrigger.Hook.ON_DEATH and trigger.target == AbilityTrigger.Target.SELF
+
+func _intensity_for(unit) -> int:
+	return 1

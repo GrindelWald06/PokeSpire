@@ -93,11 +93,7 @@ func end_turn() -> void:
 		fire(&"on_turn_end", unit)
 		if not unit.is_alive():
 			continue
-		for status in unit.status_effects.keys():
-			if unit.status_effects[status] >= 1:
-				unit.status_effects[status] -= 1
-				if unit.status_effects[status] == 0:
-					unit.status_effects.erase(status)
+		unit.decrement_status_turn()
 
 	if is_over:
 		print("Combat is over")

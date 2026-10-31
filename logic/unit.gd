@@ -7,7 +7,7 @@ var attack: int
 var max_hp: int
 var can_act: bool
 var temp_attack_modifier: int = 0
-var status_effects: Dictionary[StatusData, int] = {}
+var statuses: Dictionary[StatusData, StatusInstance] = {}
 
 func _init(p_data:PokemonData, p_side:int) -> void:
 	data = p_data
@@ -22,32 +22,60 @@ func is_alive() -> bool:
 		return true
 	return false
 
-func has_status(status: StatusData) -> bool:
-	return status_effects.has(status)
-
-func add_status(status: StatusData, turns: int) -> bool:
+func get_turns(status:StatusData) -> int:
 	if not has_status(status):
-		status_effects[status] = turns
-		return true
-
-	if status.stacking == StatusData.STACKING.IGNORE:
-		return false
-	if status.stacking == StatusData.STACKING.REFRESH:
-		status_effects[status] = turns
-		return true
-	else:
-		push_warning("ADD not implemented")
-		return false
+		return 0
+	return statuses[status].turns
 	
+func get_intensity(status:StatusData) -> int:
+	if not has_status(status):
+		return 0
+	return statuses[status].intensity
+
+func decrement_status_turn() -> void:
+	for status in statuses.keys():
+		if statuses[status].turns >= 1:
+			statuses[status].turns -= 1
+			if statuses[status].turns == 0:
+				statuses.erase(status)
+
+func has_status(status: StatusData) -> bool:
+	return statuses.has(status)
+
+func add_status(status: StatusData, turns:int, stacks:int) -> bool:
+	if not has_status(status):
+		statuses[status] = StatusInstance.new(turns)
+		return true
+	var changed = false
+	match status.duration_stacking:
+		StatusData.DurationStacking.KEEP:
+			pass
+		StatusData.DurationStacking.REFRESH:
+			changed = turns != statuses[status].turns
+			statuses[status].turns = turns
+		StatusData.DurationStacking.ADD:
+			changed = turns != statuses[status].turns
+			if -1 in [statuses[status].turns, turns]:
+				statuses[status].turns = -1
+			else:
+				statuses[status].turns += turns
+	if status.stack_intensity:
+		var current_intensity = statuses[status].intensity
+		var new_intensity = current_intensity + stacks
+		if status.max_intensity != 0:
+			new_intensity = min(new_intensity, status.max_intensity)
+		changed = current_intensity != new_intensity
+		statuses[status].intensity = new_intensity
+	return changed
 
 func remove_status(status: StatusData) -> void:
-	status_effects.erase(status)
+	statuses.erase(status)
 
 func is_blocked() -> bool:
 	return get_blocker() != null
 
 func get_blocker() -> StatusData:
-	for status in status_effects.keys():
+	for status in statuses.keys():
 		if status.blocks_action:
 			return status
 	return null
@@ -61,7 +89,7 @@ func get_attack() -> int:
 func get_hook_sources() -> Array[HookSource]:
 	var sources: Array[HookSource] = []
 	# Statuses first, so they trigger before abilities (burn before Regenerator).
-	for status in status_effects:
+	for status in statuses:
 		sources.append(status)
 	if data.ability != null:
 		sources.append(data.ability)
