@@ -6,7 +6,6 @@ var current_hp: int
 var attack: int
 var max_hp: int
 var can_act: bool
-var statuses: Dictionary[Status.STATUS, int]
 var temp_attack_modifier: int = 0
 var status_effects: Dictionary[StatusData, int] = {}
 
@@ -23,20 +22,11 @@ func is_alive() -> bool:
 		return true
 	return false
 
-func has_status(status: Status.STATUS) -> bool:
-	return statuses.has(status)
-
-func add_status(status: Status.STATUS, turn: int) -> bool:
-	if not has_status(status):
-		statuses[status] = turn
-		return true
-	return false
-
-func has_status_data(status: StatusData) -> bool:
+func has_status(status: StatusData) -> bool:
 	return status_effects.has(status)
 
-func add_status_data(status: StatusData, turns: int) -> bool:
-	if not has_status_data(status):
+func add_status(status: StatusData, turns: int) -> bool:
+	if not has_status(status):
 		status_effects[status] = turns
 		return true
 
@@ -50,7 +40,7 @@ func add_status_data(status: StatusData, turns: int) -> bool:
 		return false
 	
 
-func remove_status_data(status: StatusData) -> void:
+func remove_status(status: StatusData) -> void:
 	status_effects.erase(status)
 
 func is_blocked() -> bool:

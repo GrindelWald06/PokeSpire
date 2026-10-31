@@ -248,7 +248,7 @@ func use_move(user:Unit, target:Unit) -> bool:
 
 # Ability hooks
 func fire(hook:StringName, unit:Unit, args:Array = []) -> void:
-	var was_alive = unit.is_alive()
+	var was_alive := unit.is_alive()
 	for source in unit.get_hook_sources():
 		if was_alive and not unit.is_alive():
 			break

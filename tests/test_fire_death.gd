@@ -45,7 +45,7 @@ static func spiteful_unit(c: CombatState, hp: int) -> Unit:
 	u.data = u.data.duplicate()  # keep the shared resource untouched
 	u.data.ability = spite()
 	u.current_hp = hp
-	u.add_status_data(scorch(), -1)
+	u.add_status(scorch(), -1)
 	return u
 
 static func ability_skipped_after_status_kill() -> void:
@@ -76,7 +76,7 @@ static func aftermath_still_fires_after_status_kill() -> void:
 	var c := TestKit.make_combat()
 	var k := TestKit.add_unit(c, "koffing", 0)
 	k.current_hp = 1
-	k.add_status_data(scorch(), -1)
+	k.add_status(scorch(), -1)
 	var enemy := TestKit.add_unit(c, "squirtle", 1)
 
 	c.end_turn()

@@ -27,7 +27,7 @@ static func countdown_fires_on_last_turn() -> void:
 	trig.hook = AbilityTrigger.Hook.ON_TURN_END
 	trig.target = AbilityTrigger.Target.SELF  # no effects needed: the announcement is what we count
 	s.triggers.append(trig)
-	u.add_status_data(s, s.default_turns)
+	u.add_status(s, s.default_turns)
 
 	var fired: Array = []  # array, because lambdas capture locals by value
 	c.ability_triggered.connect(func(_unit, source): if source == s: fired.append(1))
@@ -39,13 +39,13 @@ static func countdown_fires_on_last_turn() -> void:
 	TestKit.check(u.status_effects.get(s, 0) == 1, "countdown: opponent turn end does not tick it")
 	c.end_turn()  # owner turn 2 ends (last turn)
 	TestKit.check(fired.size() == 2, "countdown: fires on its last turn (trigger before decrement)")
-	TestKit.check(not u.has_status_data(s), "countdown: erased after its last turn")
+	TestKit.check(not u.has_status(s), "countdown: erased after its last turn")
 	c.end_turn()
 	c.end_turn()  # owner turn 3 ends
 	TestKit.check(fired.size() == 2, "countdown: does not fire once gone")
 
 	var p := make_status("Permanent", -1)
-	u.add_status_data(p, p.default_turns)
+	u.add_status(p, p.default_turns)
 	c.end_turn()
 	c.end_turn()
 	TestKit.check(u.status_effects.get(p, 0) == -1, "countdown: -1 never ticks down")
@@ -62,7 +62,7 @@ static func attack_modifier_stacks_with_ability() -> void:
 	weak.attack_modifier = -1
 
 	TestKit.check(u.get_attack() == 2, "attack mod: base 0 + ability 2 = 2")
-	u.add_status_data(weak, -1)
+	u.add_status(weak, -1)
 	# Statuses run before the ability. A per-step clamp would give max(0, 0 - 1) + 2 = 2.
 	TestKit.check(u.get_attack() == 1, "attack mod: 0 - 1 + 2 = 1, no clamp in between")
 
@@ -82,7 +82,7 @@ static func blocker_freezes_unit() -> void:
 	var u := TestKit.add_unit(c, "charmander", 1)  # has a move (Ember)
 	var block := make_status("Frozen Test", 1)
 	block.blocks_action = true
-	u.add_status_data(block, block.default_turns)
+	u.add_status(block, block.default_turns)
 
 	TestKit.check(u.get_blocker() == block, "blocker: get_blocker returns the status")
 	TestKit.check(u.is_blocked(), "blocker: is_blocked true")
@@ -97,7 +97,7 @@ static func blocker_freezes_unit() -> void:
 	TestKit.check(target.current_hp == hp_before, "blocker: target untouched")
 
 	c.end_turn()  # side 1 ends: 1 -> 0, erased
-	TestKit.check(not u.has_status_data(block), "blocker: gone after its turn")
+	TestKit.check(not u.has_status(block), "blocker: gone after its turn")
 	TestKit.check(u.get_blocker() == null, "blocker: get_blocker null when nothing blocks")
 	c.end_turn()  # start_turn(1) again
 	TestKit.check(u.can_act == true, "blocker: unit acts again the next turn")

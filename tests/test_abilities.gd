@@ -1,7 +1,8 @@
 class_name TestAbilities
 extends RefCounted
 
-const PAR := Status.STATUS.PARALYSIS
+const PAR: StatusData = preload("res://data/statuses/paralysis.tres")
+const BURN: StatusData = preload("res://data/statuses/burn.tres")
 
 static func run() -> void:
 	print("--- abilities ---")
@@ -51,9 +52,9 @@ static func static_ability() -> void:
 	pika.current_hp = 5
 	pidgey.current_hp = 6
 	c.attack(pidgey, pika)
-	TestKit.check(pidgey.statuses.get(PAR, 0) == 2, "Static paralyzes with 2 turns")
+	TestKit.check(pidgey.status_effects.get(PAR, 0) == 2, "Static paralyzes with 2 turns")
 	c.end_turn()
-	TestKit.check(pidgey.statuses.get(PAR, 0) == 1, "tick: 2 -> 1")
+	TestKit.check(pidgey.status_effects.get(PAR, 0) == 1, "tick: 2 -> 1")
 	c.end_turn()
 	TestKit.check(pidgey.can_act == false, "attacker loses its next turn")
 	c.end_turn()
@@ -93,7 +94,7 @@ static func static_ability() -> void:
 	var pg5 := TestKit.add_unit(c5, "pidgey", 0)
 	pg5.add_status(PAR, 1)
 	c5.fire(&"on_attacked", pk5, [pg5])
-	TestKit.check(pg5.statuses.get(PAR, 0) == 1, "Static doesn't overwrite existing paralysis")
+	TestKit.check(pg5.status_effects.get(PAR, 0) == 1, "Static doesn't overwrite existing paralysis")
 
 static func regenerator() -> void:
 	var c := TestKit.make_combat()
@@ -120,14 +121,14 @@ static func regenerator() -> void:
 	var c4 := TestKit.make_combat()
 	var t4 := TestKit.add_unit(c4, "tangela", 0)
 	t4.current_hp = 1
-	t4.add_status(Status.STATUS.BURN, -1)
+	t4.add_status(BURN, -1)
 	c4.end_turn()
 	TestKit.check(not t4.is_alive(), "burn kills before Regenerator")
 
 	var c5 := TestKit.make_combat()
 	var t5 := TestKit.add_unit(c5, "tangela", 0)
 	t5.current_hp = 3
-	t5.add_status(Status.STATUS.BURN, -1)
+	t5.add_status(BURN, -1)
 	c5.end_turn()
 	TestKit.check(t5.current_hp == 4, "burn 1 then heal 2")
 

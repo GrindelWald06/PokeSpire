@@ -1,8 +1,8 @@
 class_name TestStatuses
 extends RefCounted
 
-const BURN := Status.STATUS.BURN
-const PAR := Status.STATUS.PARALYSIS
+const BURN: StatusData = preload("res://data/statuses/burn.tres")
+const PAR: StatusData = preload("res://data/statuses/paralysis.tres")
 
 static func run() -> void:
 	print("--- statuses ---")
@@ -77,7 +77,7 @@ static func paralysis_lifecycle() -> void:
 	var bulb := TestKit.add_unit(c, "bulbasaur", 1)
 	c.sides[0].energy = 3
 	c.use_move(pika, bulb)  # Thunder Shock
-	TestKit.check(bulb.statuses.get(PAR, 0) == 1, "paralysis applied for 1 turn")
+	TestKit.check(bulb.status_effects.get(PAR, 0) == 1, "paralysis applied for 1 turn")
 	c.end_turn()  # side 1's turn starts
 	TestKit.check(bulb.can_act == false, "paralyzed unit cannot act")
 	TestKit.check(c.attack(bulb, null) == false, "paralyzed attack refused")

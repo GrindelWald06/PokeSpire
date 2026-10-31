@@ -8,7 +8,7 @@ func resolve(ctx: EffectContext) -> void:
 		print("Can't apply status to hero")
 		return
 	var turn_to_consider = turns_override if turns_override != 0 else status.default_turns
-	if ctx.target.add_status_data(status, turn_to_consider):
+	if ctx.target.add_status(status, turn_to_consider):
 		ctx.state.status_applied.emit(ctx.target, status)
 
 func _to_string() -> String:
