@@ -66,8 +66,6 @@ func get_attack() -> int:
 	var amount = attack + temp_attack_modifier
 	for source in get_hook_sources():
 		amount = source.modify_attack(null, self, amount)
-	if has_status(Status.STATUS.BURN):
-		amount -= 1
 	return max(0, amount)
 
 func get_hook_sources() -> Array[HookSource]:

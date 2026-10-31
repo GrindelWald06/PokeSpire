@@ -7,4 +7,6 @@ func _ready() -> void:
 	TestStatuses.run()
 	TestAbilities.run()
 	TestStatusData.run()
+	TestStatusLifecycle.run()
+	TestFireDeath.run()
 	TestKit.summary()

@@ -4,11 +4,12 @@
 [ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_1u3e8"]
 [ext_resource type="Script" uid="uid://bxo8ug7k1628j" path="res://data/effects/effect.gd" id="3_2tqt0"]
 [ext_resource type="Script" uid="uid://db0haxvsluxlx" path="res://data/effects/apply_status_effect.gd" id="4_ya6hy"]
+[ext_resource type="Resource" uid="uid://cfmuq7ucuxlne" path="res://data/statuses/paralysis.tres" id="5_ya6hy"]
 
 [sub_resource type="Resource" id="Resource_dhr2n"]
 script = ExtResource("4_ya6hy")
-status = 1
-turns = 2
+status = ExtResource("5_ya6hy")
+turns_override = 2
 metadata/_custom_type_script = "uid://db0haxvsluxlx"
 
 [sub_resource type="Resource" id="Resource_t3pxt"]

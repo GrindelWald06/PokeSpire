@@ -14,7 +14,7 @@ signal unit_attacked(attacker:Unit, target:Unit)
 signal turn_started(side_index:int)
 signal move_used(user:Unit, move:MoveData, target:Unit)
 signal combat_ended(winner_side:int)
-signal status_applied(unit:Unit, status:Status.STATUS)
+signal status_applied(unit:Unit, status:StatusData)
 signal ability_triggered(unit:Unit, ability:HookSource)
 signal unit_healed(unit:Unit, amount:int)
 
@@ -77,7 +77,7 @@ func start_turn(side_index:int) -> void:
 	
 	# allow units to act
 	for unit in sides[side_index].board:
-		unit.can_act = not (unit.has_status(Status.STATUS.PARALYSIS) or unit.is_blocked())
+		unit.can_act = not unit.is_blocked()
 		fire(&"on_turn_start", unit)
 
 	# draw a card
@@ -90,20 +90,9 @@ func end_turn() -> void:
 	
 	# Apply end of turn effects:
 	for unit in sides[active_side].board.duplicate():
-		# Apply burn damage
-		if unit.has_status(Status.STATUS.BURN):
-			damage_unit(unit, 1, false)
-		if not unit.is_alive():
-			continue
 		fire(&"on_turn_end", unit)
 		if not unit.is_alive():
 			continue
-		# Decremente remaining turns for statuses
-		for status in unit.statuses.keys():
-			if unit.statuses[status] >= 1:
-				unit.statuses[status] -= 1
-				if unit.statuses[status] == 0:
-					unit.statuses.erase(status)
 		for status in unit.status_effects.keys():
 			if unit.status_effects[status] >= 1:
 				unit.status_effects[status] -= 1
@@ -158,8 +147,6 @@ func play_card(side_index:int, hand_index:int) -> bool:
 func _attack_error(attacker:Unit, target:Unit) -> String:
 	if not attacker in sides[active_side].board:
 		return "%s not in the active side" % attacker.data.display_name
-	if attacker.has_status(Status.STATUS.PARALYSIS):
-		return "%s is Paralyzed and can not attack" % attacker.data.display_name
 	if attacker.is_blocked():
 		return "%s prevented attack" % attacker.get_blocker().display_name
 	if not attacker.can_act:
@@ -201,8 +188,6 @@ func _move_error(user:Unit, target:Unit) -> String:
 		return "%s is not alive" % user.data.display_name
 	if user.side_index != active_side:
 		return "Can't use moves out of turn"
-	if user.has_status(Status.STATUS.PARALYSIS):
-		return "%s is Paralyzed and can not use move" % user.data.display_name
 	if user.is_blocked():
 		return "%s prevented using move" % user.get_blocker().display_name
 	if not user.can_act:
@@ -263,11 +248,15 @@ func use_move(user:Unit, target:Unit) -> bool:
 
 # Ability hooks
 func fire(hook:StringName, unit:Unit, args:Array = []) -> void:
+	var was_alive = unit.is_alive()
 	for source in unit.get_hook_sources():
+		if was_alive and not unit.is_alive():
+			break
 		if not source.has_method(hook):
 			push_error("No hook named %s found" % hook)
 			continue
 		source.callv(hook, [self, unit] + args)
+		
 
 func modify(hook:StringName, unit:Unit, value:int, args:Array = []) -> int:
 	for source in unit.get_hook_sources():

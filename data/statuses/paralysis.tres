@@ -1,0 +1,12 @@
+[gd_resource type="Resource" script_class="StatusData" format=3 uid="uid://cfmuq7ucuxlne"]
+
+[ext_resource type="Script" uid="uid://fvck4684rcqs" path="res://data/status_data.gd" id="1_01402"]
+[ext_resource type="Script" uid="uid://wanm38nreyeo" path="res://data/abilities/ability_trigger.gd" id="2_b2jvg"]
+
+[resource]
+script = ExtResource("1_01402")
+default_turns = 1
+blocks_action = true
+id = &"paralysis"
+display_name = "Paralysis"
+metadata/_custom_type_script = "uid://fvck4684rcqs"

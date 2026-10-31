@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://btu52bwh0ljwe" path="res://data/effects/damage_effect.gd" id="2_f4qs1"]
 [ext_resource type="Script" uid="uid://b3vucmasg4hno" path="res://data/moves/move_data.gd" id="2_hslg5"]
 [ext_resource type="Script" uid="uid://db0haxvsluxlx" path="res://data/effects/apply_status_effect.gd" id="3_f4qs1"]
+[ext_resource type="Resource" uid="uid://djy6ti46ttnjw" path="res://data/statuses/burn.tres" id="4_igc3e"]
 
 [sub_resource type="Resource" id="Resource_f4qs1"]
 script = ExtResource("2_f4qs1")
@@ -12,6 +13,7 @@ metadata/_custom_type_script = "uid://btu52bwh0ljwe"
 
 [sub_resource type="Resource" id="Resource_o5qli"]
 script = ExtResource("3_f4qs1")
+status = ExtResource("4_igc3e")
 metadata/_custom_type_script = "uid://db0haxvsluxlx"
 
 [resource]
