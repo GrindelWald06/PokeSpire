@@ -12,7 +12,7 @@ func _init(c: CombatState) -> void:
 	c.unit_summoned.connect(func(u): events.append("summoned %s" % _n(u)))
 	c.unit_attacked.connect(func(a, t): events.append("attacked %s %s" % [_n(a), _n(t)]))
 	c.move_used.connect(func(u, _m, t): events.append("move %s %s" % [_n(u), _n(t)]))
-	c.damage_dealt.connect(func(u, amount): events.append("damage %s %d" % [_n(u), amount]))
+	c.damage_dealt_to.connect(func(u, amount): events.append("damage %s %d" % [_n(u), amount]))
 	c.hero_damaged.connect(func(s, amount): events.append("hero %d %d" % [s, amount]))
 	c.unit_died.connect(func(u): events.append("died %s" % _n(u)))
 	c.unit_healed.connect(func(u, amount): events.append("healed %s %d" % [_n(u), amount]))

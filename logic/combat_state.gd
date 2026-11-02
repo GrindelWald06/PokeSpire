@@ -59,7 +59,11 @@ func heal_unit(unit:Unit, amount:int) -> void:
 		unit.current_hp += heal_amount
 		unit_healed.emit(unit, heal_amount)
 
-func start_combat() -> void:
+func start_combat(deck0:Array[PokemonData], deck1:Array[PokemonData]) -> void:
+	# setup decks
+	sides[0].deck = deck0.duplicate()
+	sides[1].deck = deck1.duplicate()
+
 	# draw 5 cards for each side
 	for side_index in range(2):
 		sides[side_index].deck.shuffle()

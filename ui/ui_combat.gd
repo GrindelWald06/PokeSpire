@@ -3,14 +3,13 @@ class_name UICombat extends Control
 @export var deck0:Array[PokemonData]
 @export var deck1:Array[PokemonData]
 
-func _ready() -> void:
-	var state = CombatState.new()
-	connect_signals(state)
-	
-	state.sides[0].deck = deck0
-	state.sides[1].deck = deck1
+var combat_state:CombatState
 
-	state.start_combat()
+func _ready() -> void:
+	combat_state = CombatState.new()
+	connect_signals(combat_state)
+
+	combat_state.start_combat(deck0, deck1)
 
 func connect_signals(state:CombatState):
 	state.damage_dealt_to.connect(_on_damage_dealt_to)
@@ -48,16 +47,16 @@ func _on_turn_started(side_index: int) -> void:
 	print("Turn started: Side ", side_index)
 
 func _on_move_used(user: Unit, move: MoveData, target: Unit) -> void:
-	print("Move used: ", _get_target_name(user), " used ", move, " on ", _get_target_name(target))
+	print("Move used: ", _get_target_name(user), " used ", move.display_name, " on ", _get_target_name(target))
 
 func _on_combat_ended(winner_side: int) -> void:
 	print("Combat ended: Winner is side ", winner_side)
 
 func _on_status_applied(unit: Unit, status: StatusData) -> void:
-	print("Status applied: ", status, " applied to ", _get_target_name(unit))
+	print("Status applied: ", status.display_name, " applied to ", _get_target_name(unit))
 
 func _on_ability_triggered(unit: Unit, ability: HookSource) -> void:
-	print("Ability triggered: ", _get_target_name(unit), " triggered ", ability)
+	print("Ability triggered: ", _get_target_name(unit), " triggered ", ability.display_name)
 
 func _on_unit_healed(unit: Unit, amount: int) -> void:
 	print("Unit healed: ", _get_target_name(unit), " recovered ", amount, " HP.")
