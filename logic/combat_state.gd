@@ -110,28 +110,29 @@ func draw_cards(side_index:int, amount:int) -> void:
 		if drawn:
 			card_drawn.emit(side_index, drawn)
 
-func play_card(side_index:int, hand_index:int) -> bool:
+func play_error(side_index:int, hand_index:int) -> String:
 	if is_over:
-		print("Combat is over")
-		return false
-
+		return "Combat is over"
 	if side_index != active_side:
-		print("Not the active player")
+		return "Not the active player"
+	var side = sides[side_index]
+	if hand_index < 0 or hand_index >= side.hand.size():
+		return "Card index out of range"
+	var card_to_play = side.hand[hand_index]
+	if card_to_play.cost > side.energy:
+		return "Not enough energy to play"
+	if side.board.size() >= side.BOARD_LIMIT:
+		return "Not enough slots in the board to play"
+	return ""
+
+func play_card(side_index:int, hand_index:int) -> bool:
+	var error = play_error(side_index, hand_index)
+	if error != "":
+		print(error)
 		return false
 
 	var side = sides[side_index]
-	if hand_index >= side.hand.size():
-		print("Card index out of range")
-		return false
-
 	var card_to_play = side.hand[hand_index]
-	if card_to_play.cost > side.energy:
-		print("Not enough energy to play")
-		return false
-	if side.board.size() >= side.BOARD_LIMIT:
-		print("Not enough slots in the board to play")
-		return false
-	
 	side.hand.erase(card_to_play)
 	side.energy -= card_to_play.cost
 	var unit = Unit.new(card_to_play, side_index)
@@ -141,6 +142,8 @@ func play_card(side_index:int, hand_index:int) -> bool:
 	return true
 
 func attack_error(attacker:Unit, target:Unit) -> String:
+	if is_over:
+		return "Combat is over"
 	if not attacker in sides[active_side].board:
 		return "%s not in the active side" % attacker.data.display_name
 	if attacker.is_blocked():
@@ -158,13 +161,9 @@ func attack_error(attacker:Unit, target:Unit) -> String:
 	return ""
 
 func attack(attacker:Unit, target:Unit) -> bool:
-	if is_over:
-		print("Combat is over")
-		return false
-
-	var attack_error = attack_error(attacker, target)
-	if attack_error != "":
-		print(attack_error)
+	var error = attack_error(attacker, target)
+	if error != "":
+		print(error)
 		return false
 	
 	attacker.can_act = false
@@ -180,6 +179,8 @@ func attack(attacker:Unit, target:Unit) -> bool:
 	return true
 
 func move_error(user:Unit, target:Unit) -> String:
+	if is_over:
+		return "Combat is over"
 	if not user.is_alive():
 		return "%s is not alive" % user.data.display_name
 	if user.side_index != active_side:
@@ -207,13 +208,9 @@ func move_error(user:Unit, target:Unit) -> String:
 	return ""
 
 func use_move(user:Unit, target:Unit) -> bool:
-	if is_over:
-		print("Combat is over")
-		return false
-
-	var move_error = move_error(user, target)
-	if move_error != "":
-		print(move_error)
+	var error = move_error(user, target)
+	if error != "":
+		print(error)
 		return false
 
 	var move_to_use = user.data.move

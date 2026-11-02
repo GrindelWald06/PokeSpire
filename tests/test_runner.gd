@@ -10,4 +10,5 @@ func _ready() -> void:
 	TestStatusLifecycle.run()
 	TestFireDeath.run()
 	TestStacking.run()
+	TestPlay.run()
 	TestKit.summary()
