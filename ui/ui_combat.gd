@@ -10,6 +10,10 @@ func _ready() -> void:
 	connect_signals(combat_state)
 	combat_state.start_combat(deck0, deck1)
 
+func refresh() -> void:
+	%Side0.refresh(combat_state, 0)
+	%Side1.refresh(combat_state, 1)
+	%TurnLabel.text = "Turn %d · Side %d" % [combat_state.turn_number, combat_state.active_side]
 
 func connect_signals(state:CombatState):
 	state.damage_dealt_to.connect(_on_damage_dealt_to)
@@ -27,41 +31,53 @@ func connect_signals(state:CombatState):
 
 func _on_damage_dealt_to(unit: Unit, amount: int) -> void:
 	print(_get_target_name(unit), " took ", amount, " damage.")
+	refresh()
 
 func _on_unit_died(unit: Unit) -> void:
 	print("Unit died: ", _get_target_name(unit))
+	refresh()
 
 func _on_hero_damaged(side_index: int, amount: int) -> void:
 	print("Hero damaged: Side ", side_index, " took ", amount, " damage.")
+	refresh()
 
 func _on_card_drawn(side_index: int, card: PokemonData) -> void:
 	print("Card drawn: Side ", side_index, " drew ", card.display_name)
+	refresh()
 
 func _on_unit_summoned(unit: Unit) -> void:
 	print("Unit summoned: ", _get_target_name(unit))
+	refresh()
 
 func _on_unit_attacked(attacker: Unit, target: Unit) -> void:
 	print("Unit attacked: ", _get_target_name(attacker), " attacked ", _get_target_name(target))
+	refresh()
 
 func _on_turn_started(side_index: int) -> void:
 	print("Turn started: Side ", side_index)
+	refresh()
 
 func _on_move_used(user: Unit, move: MoveData, target: Unit) -> void:
 	print("Move used: ", _get_target_name(user), " used ", move.display_name, " on ", _get_target_name(target))
+	refresh()
 
 func _on_combat_ended(winner_side: int) -> void:
 	print("Combat ended: Winner is side ", winner_side)
+	refresh()
 
 func _on_status_applied(unit: Unit, status: StatusData) -> void:
 	print("Status applied: ", status.display_name, " applied to ", _get_target_name(unit))
+	refresh()
 
 func _on_ability_triggered(unit: Unit, ability: HookSource) -> void:
 	print("Ability triggered: ", _get_target_name(unit), " triggered ", ability.display_name)
+	refresh()
 
 func _on_unit_healed(unit: Unit, amount: int) -> void:
 	print("Unit healed: ", _get_target_name(unit), " recovered ", amount, " HP.")
+	refresh()
 
-func _get_target_name(unit:Unit) -> String:
+func _get_target_name(unit: Unit) -> String:
 	if unit != null:
 		return unit.data.display_name
 	return "Hero"

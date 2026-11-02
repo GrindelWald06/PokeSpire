@@ -36,6 +36,7 @@ layout_mode = 2
 theme_override_constants/separation = 16
 
 [node name="Side1" parent="Margins/Layout" unique_id=132916067 instance=ExtResource("7_o6xl0")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 
@@ -54,6 +55,7 @@ layout_mode = 2
 text = "End Turn"
 
 [node name="Side0" parent="Margins/Layout" unique_id=759804923 instance=ExtResource("7_o6xl0")]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 3
 info_below = true
@@ -62,4 +64,4 @@ info_below = true
 unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 140)
 layout_mode = 2
-alignment = 2
+alignment = 1
