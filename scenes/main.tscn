@@ -6,6 +6,7 @@
 [ext_resource type="Resource" uid="uid://fqwjhnpqc78u" path="res://data/pokemon/squirtle.tres" id="4_tipki"]
 [ext_resource type="Resource" uid="uid://debn0q3xnd4xv" path="res://data/pokemon/bulbasaur.tres" id="5_85g3d"]
 [ext_resource type="Resource" uid="uid://cy85vi08373md" path="res://data/pokemon/pikachu.tres" id="6_choun"]
+[ext_resource type="PackedScene" uid="uid://bw53m5lqvw50t" path="res://ui/side_view.tscn" id="7_o6xl0"]
 
 [node name="main" type="Control" unique_id=1309235071]
 layout_mode = 3
@@ -33,3 +34,10 @@ theme_override_constants/margin_bottom = 16
 [node name="Layout" type="VBoxContainer" parent="Margins" unique_id=1958791727]
 layout_mode = 2
 theme_override_constants/separation = 16
+
+[node name="Side1" parent="Margins/Layout" unique_id=132916067 instance=ExtResource("7_o6xl0")]
+layout_mode = 2
+
+[node name="Side0" parent="Margins/Layout" unique_id=759804923 instance=ExtResource("7_o6xl0")]
+layout_mode = 2
+info_below = true
