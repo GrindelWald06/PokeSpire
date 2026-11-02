@@ -11,4 +11,5 @@ func _ready() -> void:
 	TestFireDeath.run()
 	TestStacking.run()
 	TestPlay.run()
+	TestSignals.run()
 	TestKit.summary()

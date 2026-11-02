@@ -68,7 +68,6 @@ func start_combat() -> void:
 	start_turn(0)
 
 func start_turn(side_index:int) -> void:
-	turn_started.emit(side_index)
 	# set active side
 	active_side = side_index
 	
@@ -79,6 +78,8 @@ func start_turn(side_index:int) -> void:
 	for unit in sides[side_index].board:
 		unit.can_act = not unit.is_blocked()
 		fire(&"on_turn_start", unit)
+
+	turn_started.emit(side_index)
 
 	# draw a card
 	draw_cards(side_index, 1)
