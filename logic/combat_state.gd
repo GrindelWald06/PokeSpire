@@ -140,7 +140,7 @@ func play_card(side_index:int, hand_index:int) -> bool:
 	fire(&"on_summoned", unit)
 	return true
 
-func _attack_error(attacker:Unit, target:Unit) -> String:
+func attack_error(attacker:Unit, target:Unit) -> String:
 	if not attacker in sides[active_side].board:
 		return "%s not in the active side" % attacker.data.display_name
 	if attacker.is_blocked():
@@ -162,7 +162,7 @@ func attack(attacker:Unit, target:Unit) -> bool:
 		print("Combat is over")
 		return false
 
-	var attack_error = _attack_error(attacker, target)
+	var attack_error = attack_error(attacker, target)
 	if attack_error != "":
 		print(attack_error)
 		return false
@@ -179,7 +179,7 @@ func attack(attacker:Unit, target:Unit) -> bool:
 		fire(&"on_attacked", target, [attacker])
 	return true
 
-func _move_error(user:Unit, target:Unit) -> String:
+func move_error(user:Unit, target:Unit) -> String:
 	if not user.is_alive():
 		return "%s is not alive" % user.data.display_name
 	if user.side_index != active_side:
@@ -211,7 +211,7 @@ func use_move(user:Unit, target:Unit) -> bool:
 		print("Combat is over")
 		return false
 
-	var move_error = _move_error(user, target)
+	var move_error = move_error(user, target)
 	if move_error != "":
 		print(move_error)
 		return false

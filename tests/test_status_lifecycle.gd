@@ -90,9 +90,9 @@ static func blocker_freezes_unit() -> void:
 
 	c.end_turn()  # start_turn(1)
 	TestKit.check(u.can_act == false, "blocker: start_turn leaves the unit unable to act")
-	TestKit.check(c._attack_error(u, target).contains(block.display_name), "blocker: attack refusal names the status")
-	TestKit.check(c._attack_error(u, target).contains(u.data.display_name), "blocker: attack refusal names the unit")
-	TestKit.check(c._move_error(u, target).contains(block.display_name), "blocker: move refusal names the status")
+	TestKit.check(c.attack_error(u, target).contains(block.display_name), "blocker: attack refusal names the status")
+	TestKit.check(c.attack_error(u, target).contains(u.data.display_name), "blocker: attack refusal names the unit")
+	TestKit.check(c.move_error(u, target).contains(block.display_name), "blocker: move refusal names the status")
 	var hp_before := target.current_hp
 	TestKit.check(c.attack(u, target) == false, "blocker: attack refused")
 	TestKit.check(c.use_move(u, target) == false, "blocker: move refused")
