@@ -37,7 +37,29 @@ theme_override_constants/separation = 16
 
 [node name="Side1" parent="Margins/Layout" unique_id=132916067 instance=ExtResource("7_o6xl0")]
 layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TurnBar" type="HBoxContainer" parent="Margins/Layout" unique_id=1443280323]
+layout_mode = 2
+
+[node name="TurnLabel" type="Label" parent="Margins/Layout/TurnBar" unique_id=848585783]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Turn 1 · Side 0"
+
+[node name="EndTurnButton" type="Button" parent="Margins/Layout/TurnBar" unique_id=2119743729]
+unique_name_in_owner = true
+layout_mode = 2
+text = "End Turn"
 
 [node name="Side0" parent="Margins/Layout" unique_id=759804923 instance=ExtResource("7_o6xl0")]
 layout_mode = 2
+size_flags_vertical = 3
 info_below = true
+
+[node name="Hand" type="HBoxContainer" parent="Margins/Layout" unique_id=2010122001]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 140)
+layout_mode = 2
+alignment = 2
