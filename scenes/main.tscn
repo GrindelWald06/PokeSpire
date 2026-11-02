@@ -9,7 +9,27 @@
 
 [node name="main" type="Control" unique_id=1309235071]
 layout_mode = 3
-anchors_preset = 0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_o5qli")
 deck0 = Array[ExtResource("2_tefeu")]([ExtResource("3_o6xl0"), ExtResource("4_tipki"), ExtResource("5_85g3d"), ExtResource("3_o6xl0"), ExtResource("4_tipki"), ExtResource("5_85g3d"), ExtResource("6_choun"), ExtResource("6_choun"), ExtResource("6_choun")])
 deck1 = Array[ExtResource("2_tefeu")]([ExtResource("6_choun"), ExtResource("6_choun"), ExtResource("6_choun"), ExtResource("5_85g3d"), ExtResource("5_85g3d"), ExtResource("4_tipki"), ExtResource("4_tipki"), ExtResource("3_o6xl0"), ExtResource("3_o6xl0")])
+
+[node name="Margins" type="MarginContainer" parent="." unique_id=2021242347]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 16
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 16
+
+[node name="Layout" type="VBoxContainer" parent="Margins" unique_id=1958791727]
+layout_mode = 2
+theme_override_constants/separation = 16

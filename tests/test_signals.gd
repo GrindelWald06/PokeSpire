@@ -127,11 +127,13 @@ static func turn_started_sees_new_turn() -> void:
 
 static func start_combat() -> void:
 	var c := TestKit.make_combat()
+	var deck0: Array[PokemonData] = []
+	var deck1: Array[PokemonData] = []
 	for i in range(10):
-		c.sides[0].deck.append(TestKit.data("charmander"))
-		c.sides[1].deck.append(TestKit.data("squirtle"))
+		deck0.append(TestKit.data("charmander"))
+		deck1.append(TestKit.data("squirtle"))
 	var rec := TestLog.new(c)
-	c.start_combat()
+	c.start_combat(deck0, deck1)
 	var expected: Array = []
 	for i in range(5): expected.append("drawn 0")
 	for i in range(5): expected.append("drawn 1")
@@ -139,6 +141,7 @@ static func start_combat() -> void:
 	expect(rec, expected, "start_combat: 5 each, then turn 0 and its draw")
 	TestKit.check(c.sides[0].hand.size() == 6 and c.sides[1].hand.size() == 5, "start_combat: hands are 6 and 5")
 	TestKit.check(c.active_side == 0 and c.turn_number == 1 and c.sides[0].energy == 3, "start_combat: side 0, turn 1, 3 energy")
+	TestKit.check(deck0.size() == 10 and deck1.size() == 10, "start_combat: the decks passed in are copied, not consumed")
 
 static func start_turn_setup() -> void:
 	var c := TestKit.make_combat()
