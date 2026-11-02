@@ -5,7 +5,7 @@ var active_side: int = 0
 var turn_number: int = 1
 var is_over:bool = false
 
-signal damage_dealt(unit:Unit, amount:int)
+signal damage_dealt_to(unit:Unit, amount:int)
 signal unit_died(unit:Unit)
 signal hero_damaged(side_index:int, amount:int)
 signal card_drawn(side_index:int, card:PokemonData)
@@ -38,7 +38,7 @@ func damage_unit(unit:Unit, amount:int, allow_spill:=true) -> void:
 	overkill = modify(&"modify_spill", unit, overkill)
 	# deal damage
 	unit.current_hp = max(0, unit.current_hp - amount)
-	damage_dealt.emit(unit, amount)
+	damage_dealt_to.emit(unit, amount)
 	
 	# deal with overkill
 	if overkill > 0 and allow_spill:
@@ -77,9 +77,11 @@ func start_turn(side_index:int) -> void:
 	# allow units to act
 	for unit in sides[side_index].board:
 		unit.can_act = not unit.is_blocked()
-		fire(&"on_turn_start", unit)
 
 	turn_started.emit(side_index)
+
+	for unit in sides[side_index].board:
+		fire(&"on_turn_start", unit)
 
 	# draw a card
 	draw_cards(side_index, 1)

@@ -1,3 +1,15 @@
 [gd_scene format=3 uid="uid://dweowyn2lwu34"]
 
-[node name="main" type="Node2D" unique_id=1020326684]
+[ext_resource type="Script" uid="uid://oihvfrylo0uo" path="res://ui/ui_combat.gd" id="1_o5qli"]
+[ext_resource type="Script" uid="uid://blmbveo2laj6o" path="res://data/pokemon/pokemon_data.gd" id="2_tefeu"]
+[ext_resource type="Resource" uid="uid://csxoduw56wvvq" path="res://data/pokemon/charmander.tres" id="3_o6xl0"]
+[ext_resource type="Resource" uid="uid://fqwjhnpqc78u" path="res://data/pokemon/squirtle.tres" id="4_tipki"]
+[ext_resource type="Resource" uid="uid://debn0q3xnd4xv" path="res://data/pokemon/bulbasaur.tres" id="5_85g3d"]
+[ext_resource type="Resource" uid="uid://cy85vi08373md" path="res://data/pokemon/pikachu.tres" id="6_choun"]
+
+[node name="main" type="Control" unique_id=1309235071]
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_o5qli")
+deck0 = Array[ExtResource("2_tefeu")]([ExtResource("3_o6xl0"), ExtResource("4_tipki"), ExtResource("5_85g3d"), ExtResource("3_o6xl0"), ExtResource("4_tipki"), ExtResource("5_85g3d"), ExtResource("6_choun"), ExtResource("6_choun"), ExtResource("6_choun")])
+deck1 = Array[ExtResource("2_tefeu")]([ExtResource("6_choun"), ExtResource("6_choun"), ExtResource("6_choun"), ExtResource("5_85g3d"), ExtResource("5_85g3d"), ExtResource("4_tipki"), ExtResource("4_tipki"), ExtResource("3_o6xl0"), ExtResource("3_o6xl0")])
