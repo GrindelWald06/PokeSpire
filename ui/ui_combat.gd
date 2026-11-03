@@ -9,6 +9,7 @@ func _ready() -> void:
 	combat_state = CombatState.new()
 	connect_signals(combat_state)
 	combat_state.start_combat(deck0, deck1)
+	%EndTurnButton.pressed.connect(combat_state.end_turn)
 
 func refresh() -> void:
 	%Side0.refresh(combat_state, 0)
