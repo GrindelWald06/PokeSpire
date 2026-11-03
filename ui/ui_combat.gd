@@ -5,16 +5,28 @@ class_name UICombat extends Control
 
 var combat_state:CombatState
 
+const CARDVIEW = preload("res://ui/card_view.tscn")
+
 func _ready() -> void:
 	combat_state = CombatState.new()
 	connect_signals(combat_state)
 	combat_state.start_combat(deck0, deck1)
+	combat_state.play_card(0, 0)
 	%EndTurnButton.pressed.connect(combat_state.end_turn)
 
 func refresh() -> void:
 	%Side0.refresh(combat_state, 0)
 	%Side1.refresh(combat_state, 1)
 	%TurnLabel.text = "Turn %d · Side %d" % [combat_state.turn_number, combat_state.active_side]
+	# refresh hand
+	for card in %Hand.get_children():
+		%Hand.remove_child(card)
+		card.queue_free()
+	for i in range(combat_state.sides[combat_state.active_side].hand.size()):
+		var card = combat_state.sides[combat_state.active_side].hand[i]
+		var cv = CARDVIEW.instantiate()
+		%Hand.add_child(cv)
+		cv.setup(card, i)
 
 func connect_signals(state:CombatState):
 	state.damage_dealt_to.connect(_on_damage_dealt_to)

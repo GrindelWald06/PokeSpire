@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://bw53m5lqvw50t" path="res://ui/side_view.tscn" id="7_o6xl0"]
 
 [node name="main" type="Control" unique_id=1309235071]
+custom_maximum_size = Vector2(1152, 648)
+propagate_maximum_size = true
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0

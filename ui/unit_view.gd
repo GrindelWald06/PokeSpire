@@ -2,8 +2,8 @@ class_name UnitView extends PanelContainer
 
 var unit:Unit
 
-signal body_pressed(unit)
-signal move_pressed(unit)
+signal body_pressed(unit:Unit)
+signal move_pressed(unit:Unit)
 
 func setup(state:CombatState, p_unit:Unit) -> void:
 	unit = p_unit
@@ -23,6 +23,9 @@ func get_unit_body_display(state:CombatState) -> String:
 	var result = ""
 	result += unit.data.display_name + "\n"
 	result += "ATK %d    HP %d/%d\n" % [state.get_attack(unit), unit.current_hp, unit.max_hp]
+	if not unit.statuses:
+		return result
+
 	result += "Current status:\n"
 	for status in unit.statuses:
 		result += "%s" % status.display_name
@@ -33,5 +36,5 @@ func get_unit_body_display(state:CombatState) -> String:
 		if t > 0:
 			result += " (%d)" % t
 		result += "\n"
-		
+
 	return result

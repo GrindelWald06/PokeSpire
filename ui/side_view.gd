@@ -13,12 +13,10 @@ func refresh(state:CombatState, side_index:int) -> void:
 	%HeroLabel.text = "Hero: %d/%d" % [side.hero_hp, side.hero_max_hp]
 	%EnergyLabel.text = "Energy: %d/%d" % [side.energy, side.max_energy]
 
-	#clear board
+	#refresh board
 	for uv in %Board.get_children():
-		remove_child(uv)
-		uv.free()
-	
-	#repopulate board
+		%Board.remove_child(uv)
+		uv.queue_free()
 	for u in side.board:
 		var uv = UNIT_VIEW.instantiate()
 		%Board.add_child(uv)
